@@ -53,6 +53,7 @@ public class Core {
         JSONObject blameseb = new JSONObject();
         //restricted; true = commands only allowed in bot commands, false = commands allowed in any channel
         blameseb.put("restricted", true);
+        blameseb.put("toggled", true);
         blameseb.put("blameseb", 0);
         blameseb.put("forgiveseb", 0);
 

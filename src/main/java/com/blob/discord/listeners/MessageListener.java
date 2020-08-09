@@ -21,22 +21,7 @@ public class MessageListener extends ListenerAdapter {
             if (event.getChannel().getId().equals("699800487725105162")) {
 
             } else {
-                JSONObject jsonObject;
-                try {
-                    jsonObject = (JSONObject) readJsonFile();
-                } catch (IOException | ParseException e) {
-                    e.printStackTrace();
-                }
-
-                if (jsonObject.get("restricted") == false) {
-
-                }
-            }
-
-            if (event.getMessage().getContentDisplay().equals("")) {
-
-            } else if (event.getMessage().getContentDisplay().equals("")) {
-
+                readJsonFile()
             }
 
             //
@@ -58,16 +43,21 @@ public class MessageListener extends ListenerAdapter {
 
     }
 
-    public Object readJsonFile() throws IOException, ParseException {
-        Object obj = new JSONParser().parse(new FileReader("blameseb.json"));
-        JSONArray jsonArray = (JSONArray) obj;
-        //JSONObject jsonObject = (JSONObject) jsonArray.get("");
+    public Object readJsonFile() {
+        Object obj = null;
+        try {
+            obj = new JSONParser().parse(new FileReader("blameseb.json"));
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        JSONObject jsonObject = (JSONObject) obj;
 
         int blameseb = (int) jsonObject.get("blameseb");
         int forgiveseb = (int) jsonObject.get("forgiveseb");
         boolean restricted = (boolean) jsonObject.get("restricted");
+        boolean toggled = (boolean) jsonObject.get("toggled");
 
-        Object[] toReturn = {blameseb, forgiveseb, restricted};
+        Object[] toReturn = new Object[]{blameseb, forgiveseb, restricted, toggled};
         return toReturn;
     }
 
