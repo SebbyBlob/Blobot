@@ -19,9 +19,45 @@ public class MessageListener extends ListenerAdapter {
 
         if (event.isFromType(ChannelType.TEXT)) {
             if (event.getChannel().getId().equals("699800487725105162")) {
-
+                if (readJsonFile()[3].equals(true)) {
+                    if (event.getMessage().getContentRaw().equals("blame seb")) {
+                        JSONObject jsonObject = (JSONObject) readJsonFile()[0];
+                        jsonObject.put("blameseb", (int) readJsonFile()[0] + 1);
+                        event.getChannel().sendMessage("**"+event.getAuthor().getName()+" has blamed Seb for the "+readJsonFile()[0]+" time!**").queue();
+                    } else if (event.getMessage().getContentRaw().equals("forgive seb")) {
+                        JSONObject jsonObject = (JSONObject) readJsonFile()[1];
+                        jsonObject.put("forgiveseb", (int) readJsonFile()[1] + 1);
+                        event.getChannel().sendMessage("**"+event.getAuthor().getName()+" has forgiven Seb for the "+readJsonFile()[1]+" time!**").queue();
+                    } else if (event.getMessage().getContentRaw().equals("is it sebs fault") ||
+                               event.getMessage().getContentRaw().equals("is it seb's fault?") ||
+                               event.getMessage().getContentRaw().equals("is it sebs fault?") ||
+                               event.getMessage().getContentRaw().equals("iisf") ||
+                               event.getMessage().getContentRaw().equals("iisf?")) {
+                        int blameseb = (int) readJsonFile()[0];
+                        int forgiveseb = (int) readJsonFile()[1];
+                        if (blameseb > forgiveseb) {
+                            event.getChannel().sendMessage("**It is Seb's fault!**").queue();
+                        } else if (blameseb == forgiveseb) {
+                            event.getChannel().sendMessage("**It is not Seb's fault nor his fault!**").queue();
+                        } else if (blameseb < forgiveseb) {
+                            event.getChannel().sendMessage("**It is not Seb's fault!**").queue();
+                        }
+                    } else if (event.getMessage().getContentRaw().equals("ping me")) {
+                        event.getChannel().sendMessage(event.getAuthor().getAsMention()+" ping!").queue();
+                    }
+                } else if (event.getAuthor().getId().equals("400453367966466058") && event.getMessage().getContentRaw().equals("blobot enable")) {
+                    JSONObject jsonObject = (JSONObject) readJsonFile()[3];
+                    jsonObject.put("toggled", true);
+                }
             } else {
-                readJsonFile()
+                if (readJsonFile()[3].equals(true) && readJsonFile()[2].equals(false)) {
+
+                } else if (readJsonFile()[3].equals(false)) {
+                    if (event.getAuthor().getId().equals("400453367966466058") && event.getMessage().getContentRaw().equals("blobot enable")) {
+                        JSONObject jsonObject = (JSONObject) readJsonFile()[3];
+                        jsonObject.put("toggled", true);
+                    }
+                }
             }
 
             //
@@ -35,6 +71,7 @@ public class MessageListener extends ListenerAdapter {
 
                 } else if (event.getMessage().getContentDisplay().equals("ping me")) {
                     event.getChannel().sendMessage(event.getAuthor().getAsMention() + " ping!").queue();
+                    event.getChannel().sendMessageFormat(Fo ,event.getAuthor().getAsMention() + " ping!").queue();
                 }
             }
         } else if (event.isFromType(ChannelType.PRIVATE)) {
@@ -43,7 +80,7 @@ public class MessageListener extends ListenerAdapter {
 
     }
 
-    public Object readJsonFile() {
+    public Object[] readJsonFile() {
         Object obj = null;
         try {
             obj = new JSONParser().parse(new FileReader("blameseb.json"));
