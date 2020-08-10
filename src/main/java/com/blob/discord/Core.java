@@ -21,7 +21,7 @@ public class Core {
 
         JDABuilder builder = JDABuilder.createDefault(args[0]);
 
-        builder.setToken("");
+        builder.setToken("NzQxNzgwNzA3MTA5NzY1MTUw.Xy8jHg.lSPAcTKoBjgwVFR78_BDEGojPKk");
         builder.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE);
         builder.setActivity(Activity.watching("TGU"));
 

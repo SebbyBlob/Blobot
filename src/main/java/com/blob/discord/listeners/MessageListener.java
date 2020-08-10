@@ -20,6 +20,7 @@ public class MessageListener extends ListenerAdapter {
         if (event.isFromType(ChannelType.TEXT)) {
             if (event.getChannel().getId().equals("699800487725105162")) {
                 if (readJsonFile()[3].equals(true)) {
+                    //
                     if (event.getMessage().getContentRaw().equals("blame seb")) {
                         JSONObject jsonObject = (JSONObject) readJsonFile()[0];
                         jsonObject.put("blameseb", (int) readJsonFile()[0] + 1);
@@ -44,7 +45,11 @@ public class MessageListener extends ListenerAdapter {
                         }
                     } else if (event.getMessage().getContentRaw().equals("ping me")) {
                         event.getChannel().sendMessage(event.getAuthor().getAsMention()+" ping!").queue();
+                    } else if (event.getMessage().getContentRaw().equals("blobot disable") && event.getAuthor().getId().equals("400453367966466058")) {
+                        JSONObject jsonObject = (JSONObject)
+                        event.getChannel().sendMessage("Disabled Blobot commands!").queue();
                     }
+                        //
                 } else if (event.getAuthor().getId().equals("400453367966466058") && event.getMessage().getContentRaw().equals("blobot enable")) {
                     JSONObject jsonObject = (JSONObject) readJsonFile()[3];
                     jsonObject.put("toggled", true);
@@ -57,21 +62,6 @@ public class MessageListener extends ListenerAdapter {
                         JSONObject jsonObject = (JSONObject) readJsonFile()[3];
                         jsonObject.put("toggled", true);
                     }
-                }
-            }
-
-            //
-
-            else if (event.getChannel().getId().equals("699800487725105162")) {
-                if (event.getMessage().getContentDisplay().equals("blame seb")) {
-
-                } else if (event.getMessage().getContentDisplay().equals("forgive seb")) {
-
-                } else if (event.getMessage().getContentDisplay().equals("")) {
-
-                } else if (event.getMessage().getContentDisplay().equals("ping me")) {
-                    event.getChannel().sendMessage(event.getAuthor().getAsMention() + " ping!").queue();
-                    event.getChannel().sendMessageFormat(Fo ,event.getAuthor().getAsMention() + " ping!").queue();
                 }
             }
         } else if (event.isFromType(ChannelType.PRIVATE)) {
