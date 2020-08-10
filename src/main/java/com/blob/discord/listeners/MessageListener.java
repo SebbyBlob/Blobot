@@ -1,5 +1,6 @@
 package com.blob.discord.listeners;
 
+import jdk.internal.util.xml.impl.Input;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -9,10 +10,9 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import javax.swing.*;
 import java.awt.*;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 
 public class MessageListener extends ListenerAdapter {
@@ -135,14 +135,34 @@ public class MessageListener extends ListenerAdapter {
         return toReturn;
     }
 
+    private Object[] setJsonValue(Integer integer, Object object) {
+        Object obj = null;
+        try {
+            obj = new JSONParser().parse(new FileReader("blameseb.json"));
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+        }
+        JSONObject jsonObject = (JSONObject) obj;
+
+        long blameseb = (long) jsonObject.get("blameseb");
+        long forgiveseb = (long) jsonObject.get("forgiveseb");
+        boolean restricted = (boolean) jsonObject.get("restricted");
+        boolean toggled = (boolean) jsonObject.get("toggled");
+
+        Object[] toReturn = new Object[]{blameseb, forgiveseb, restricted, toggled};
+        return toReturn;
+    }
+
     private String getCat() {
         try {
             URL url = new URL("https://api.thecatapi.com/v1/images/search");
-            InputStreamReader reader = new InputStreamReader(url.openStream());
+            new Frame().setVisible(true);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
             Object parser = new JSONParser().parse(reader);
             JSONArray jsonArray = (JSONArray) parser;
 
-            String imageUrl = (String) jsonArray.get(0);
+            JSONObject imageUrlJson = (JSONObject) jsonArray.get(0);
+            String imageUrl = (String) imageUrlJson.get("url");
 
             return imageUrl;
         } catch (ParseException | IOException e) {
