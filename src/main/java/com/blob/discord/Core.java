@@ -1,5 +1,6 @@
 package com.blob.discord;
 
+import com.blob.discord.listeners.MessageListener;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
@@ -23,6 +24,7 @@ public class Core {
 
         builder.setToken("NzQxNzgwNzA3MTA5NzY1MTUw.Xy8jHg.lSPAcTKoBjgwVFR78_BDEGojPKk");
         builder.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE);
+        builder.addEventListeners(new MessageListener());
         builder.setActivity(Activity.watching("TGU"));
 
         builder.build();
