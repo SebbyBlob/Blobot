@@ -1,7 +1,9 @@
 package com.blob.discord;
 
 import com.blob.discord.listeners.MessageListener;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.json.simple.JSONArray;
@@ -20,11 +22,11 @@ public class Core {
 
     public static void main(String[] args) throws LoginException {
 
-        JDABuilder builder = JDABuilder.createDefault(args[0]);
+        JDABuilder builder = JDABuilder.createDefault("NzQxNzgwNzA3MTA5NzY1MTUw.Xy8jHg.lSPAcTKoBjgwVFR78_BDEGojPKk");
 
-        builder.setToken("NzQxNzgwNzA3MTA5NzY1MTUw.Xy8jHg.lSPAcTKoBjgwVFR78_BDEGojPKk");
         builder.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE);
         builder.addEventListeners(new MessageListener());
+        builder.setStatus(OnlineStatus.ONLINE);
         builder.setActivity(Activity.watching("TGU"));
 
         builder.build();
@@ -37,12 +39,13 @@ public class Core {
 
             Object obj = jsonParser.parse(reader);
 
-            JSONArray blameseb = (JSONArray) obj;
+            JSONObject blameseb = (JSONObject) obj;
             System.out.println(blameseb);
 
         } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             createJsonFile();
+            System.out.printf("Creating JSON file...");
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
@@ -60,6 +63,7 @@ public class Core {
 
         try {
             Files.write(Paths.get("blameseb.json"), blameseb.toJSONString().getBytes());
+            System.out.printf("Created JSON file.");
         } catch (IOException e) {
             e.printStackTrace();
         }

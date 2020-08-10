@@ -4,6 +4,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -18,26 +19,25 @@ public class MessageListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-
         if (event.isFromType(ChannelType.TEXT)) {
             if (event.getChannel().getId().equals("699800487725105162")) {
                 if (readJsonFile()[3].equals(true)) {
                     //
                     if (event.getMessage().getContentRaw().equalsIgnoreCase("blame seb")) {
                         JSONObject jsonObject = (JSONObject) readJsonFile()[0];
-                        jsonObject.put("blameseb", (int) readJsonFile()[0] + 1);
+                        jsonObject.put("blameseb", (long) readJsonFile()[0] + 1);
                         event.getChannel().sendMessage("**" + event.getAuthor().getName() + " has blamed Seb for the " + readJsonFile()[0] + " time!**").queue();
                     } else if (event.getMessage().getContentRaw().equalsIgnoreCase("forgive seb")) {
                         JSONObject jsonObject = (JSONObject) readJsonFile()[1];
-                        jsonObject.put("forgiveseb", (int) readJsonFile()[1] + 1);
+                        jsonObject.put("forgiveseb", (long) readJsonFile()[1] + 1);
                         event.getChannel().sendMessage("**" + event.getAuthor().getName() + " has forgiven Seb for the " + readJsonFile()[1] + " time!**").queue();
                     } else if (event.getMessage().getContentRaw().equalsIgnoreCase("is it sebs fault") ||
                             event.getMessage().getContentRaw().equalsIgnoreCase("is it seb's fault?") ||
                             event.getMessage().getContentRaw().equalsIgnoreCase("is it sebs fault?") ||
                             event.getMessage().getContentRaw().equalsIgnoreCase("iisf") ||
                             event.getMessage().getContentRaw().equalsIgnoreCase("iisf?")) {
-                        int blameseb = (int) readJsonFile()[0];
-                        int forgiveseb = (int) readJsonFile()[1];
+                        long blameseb = (long) readJsonFile()[0];
+                        long forgiveseb = (long) readJsonFile()[1];
                         if (blameseb > forgiveseb) {
                             event.getChannel().sendMessage("**It is Seb's fault!**").queue();
                         } else if (blameseb == forgiveseb) {
@@ -69,19 +69,19 @@ public class MessageListener extends ListenerAdapter {
                     //
                     if (event.getMessage().getContentRaw().equalsIgnoreCase("blame seb")) {
                         JSONObject jsonObject = (JSONObject) readJsonFile()[0];
-                        jsonObject.put("blameseb", (int) readJsonFile()[0] + 1);
+                        jsonObject.put("blameseb", (long) readJsonFile()[0] + 1);
                         event.getChannel().sendMessage("**" + event.getAuthor().getName() + " has blamed Seb for the " + readJsonFile()[0] + " time!**").queue();
                     } else if (event.getMessage().getContentRaw().equalsIgnoreCase("forgive seb")) {
                         JSONObject jsonObject = (JSONObject) readJsonFile()[1];
-                        jsonObject.put("forgiveseb", (int) readJsonFile()[1] + 1);
+                        jsonObject.put("forgiveseb", (long) readJsonFile()[1] + 1);
                         event.getChannel().sendMessage("**" + event.getAuthor().getName() + " has forgiven Seb for the " + readJsonFile()[1] + " time!**").queue();
                     } else if (event.getMessage().getContentRaw().equalsIgnoreCase("is it sebs fault") ||
                             event.getMessage().getContentRaw().equalsIgnoreCase("is it seb's fault?") ||
                             event.getMessage().getContentRaw().equalsIgnoreCase("is it sebs fault?") ||
                             event.getMessage().getContentRaw().equalsIgnoreCase("iisf") ||
                             event.getMessage().getContentRaw().equalsIgnoreCase("iisf?")) {
-                        int blameseb = (int) readJsonFile()[0];
-                        int forgiveseb = (int) readJsonFile()[1];
+                        long blameseb = (long) readJsonFile()[0];
+                        long forgiveseb = (long) readJsonFile()[1];
                         if (blameseb > forgiveseb) {
                             event.getChannel().sendMessage("**It is Seb's fault!**").queue();
                         } else if (blameseb == forgiveseb) {
@@ -126,8 +126,8 @@ public class MessageListener extends ListenerAdapter {
         }
         JSONObject jsonObject = (JSONObject) obj;
 
-        int blameseb = (int) jsonObject.get("blameseb");
-        int forgiveseb = (int) jsonObject.get("forgiveseb");
+        long blameseb = (long) jsonObject.get("blameseb");
+        long forgiveseb = (long) jsonObject.get("forgiveseb");
         boolean restricted = (boolean) jsonObject.get("restricted");
         boolean toggled = (boolean) jsonObject.get("toggled");
 
@@ -140,9 +140,9 @@ public class MessageListener extends ListenerAdapter {
             URL url = new URL("https://api.thecatapi.com/v1/images/search");
             InputStreamReader reader = new InputStreamReader(url.openStream());
             Object parser = new JSONParser().parse(reader);
-            JSONObject jsonObject = (JSONObject) parser;
+            JSONArray jsonArray = (JSONArray) parser;
 
-            String imageUrl = (String) jsonObject.get("url");
+            String imageUrl = (String) jsonArray.get(0);
 
             return imageUrl;
         } catch (ParseException | IOException e) {
