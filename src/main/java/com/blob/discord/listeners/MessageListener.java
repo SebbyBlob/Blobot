@@ -1,6 +1,5 @@
 package com.blob.discord.listeners;
 
-import jdk.internal.util.xml.impl.Input;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -10,9 +9,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import javax.swing.*;
-import java.awt.*;
-import java.io.*;
+import javax.annotation.Nullable;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 
 public class MessageListener extends ListenerAdapter {
@@ -24,12 +25,10 @@ public class MessageListener extends ListenerAdapter {
                 if (readJsonFile()[3].equals(true)) {
                     //
                     if (event.getMessage().getContentRaw().equalsIgnoreCase("blame seb")) {
-                        JSONObject jsonObject = (JSONObject) readJsonFile()[0];
-                        jsonObject.put("blameseb", (long) readJsonFile()[0] + 1);
+                        setJsonValue(0, null);
                         event.getChannel().sendMessage("**" + event.getAuthor().getName() + " has blamed Seb for the " + readJsonFile()[0] + " time!**").queue();
                     } else if (event.getMessage().getContentRaw().equalsIgnoreCase("forgive seb")) {
-                        JSONObject jsonObject = (JSONObject) readJsonFile()[1];
-                        jsonObject.put("forgiveseb", (long) readJsonFile()[1] + 1);
+                        setJsonValue(1, null);
                         event.getChannel().sendMessage("**" + event.getAuthor().getName() + " has forgiven Seb for the " + readJsonFile()[1] + " time!**").queue();
                     } else if (event.getMessage().getContentRaw().equalsIgnoreCase("is it sebs fault") ||
                             event.getMessage().getContentRaw().equalsIgnoreCase("is it seb's fault?") ||
@@ -45,10 +44,10 @@ public class MessageListener extends ListenerAdapter {
                         } else if (blameseb < forgiveseb) {
                             event.getChannel().sendMessage("**It is not Seb's fault!**").queue();
                         }
-                    } else if (event.getMessage().getContentRaw().equalsIgnoreCase("blobot cat")) {
+                    } else if (event.getMessage().getContentRaw().equalsIgnoreCase("cat")) {
                         EmbedBuilder eb = new EmbedBuilder();
                         eb.setTitle("**Cat :D**");
-                        eb.setColor(new Color(64, 158, 230));
+                        eb.setColor(new java.awt.Color(64, 158, 230));
                         eb.setImage(getCat());
                         event.getChannel().sendMessage(eb.build()).queue();
                     } else if (event.getMessage().getContentRaw().equalsIgnoreCase("ping me")) {
@@ -57,6 +56,15 @@ public class MessageListener extends ListenerAdapter {
                         JSONObject jsonObject = (JSONObject) readJsonFile()[3];
                         jsonObject.put("toggled", false);
                         event.getChannel().sendMessage("Disabled Blobot commands!").queue();
+                    } else if (event.getMessage().getContentRaw().equalsIgnoreCase("blobot restricted")) {
+                        boolean restrictedState = (boolean) readJsonFile()[2];
+                        if (restrictedState == true) {
+                            setJsonValue(2, false);
+                            event.getChannel().sendMessage("Blobot commands are now allowed in all channels.").queue();
+                        } else  {
+                            setJsonValue(2, true);
+                            event.getChannel().sendMessage("Blobot commands are now Only allowed in " + event.getJDA().getGuildChannelById("") + " .").queue();
+                        }
                     }
                     //
                 } else if (event.getAuthor().getId().equals("400453367966466058") && event.getMessage().getContentRaw().equalsIgnoreCase("blobot enable")) {
@@ -68,12 +76,10 @@ public class MessageListener extends ListenerAdapter {
                 if (readJsonFile()[3].equals(true) && readJsonFile()[2].equals(false)) {
                     //
                     if (event.getMessage().getContentRaw().equalsIgnoreCase("blame seb")) {
-                        JSONObject jsonObject = (JSONObject) readJsonFile()[0];
-                        jsonObject.put("blameseb", (long) readJsonFile()[0] + 1);
+                        setJsonValue(0, null);
                         event.getChannel().sendMessage("**" + event.getAuthor().getName() + " has blamed Seb for the " + readJsonFile()[0] + " time!**").queue();
                     } else if (event.getMessage().getContentRaw().equalsIgnoreCase("forgive seb")) {
-                        JSONObject jsonObject = (JSONObject) readJsonFile()[1];
-                        jsonObject.put("forgiveseb", (long) readJsonFile()[1] + 1);
+                        setJsonValue(1, null);
                         event.getChannel().sendMessage("**" + event.getAuthor().getName() + " has forgiven Seb for the " + readJsonFile()[1] + " time!**").queue();
                     } else if (event.getMessage().getContentRaw().equalsIgnoreCase("is it sebs fault") ||
                             event.getMessage().getContentRaw().equalsIgnoreCase("is it seb's fault?") ||
@@ -89,10 +95,10 @@ public class MessageListener extends ListenerAdapter {
                         } else if (blameseb < forgiveseb) {
                             event.getChannel().sendMessage("**It is not Seb's fault!**").queue();
                         }
-                    } else if (event.getMessage().getContentRaw().equalsIgnoreCase("blobot cat")) {
+                    } else if (event.getMessage().getContentRaw().equalsIgnoreCase("cat")) {
                         EmbedBuilder eb = new EmbedBuilder();
                         eb.setTitle("**Cat :D**");
-                        eb.setColor(new Color(64, 158, 230));
+                        eb.setColor(new java.awt.Color(64, 158, 230));
                         eb.setImage(getCat());
                         event.getChannel().sendMessage(eb.build()).queue();
                     } else if (event.getMessage().getContentRaw().equalsIgnoreCase("ping me")) {
@@ -135,7 +141,7 @@ public class MessageListener extends ListenerAdapter {
         return toReturn;
     }
 
-    private Object[] setJsonValue(Integer integer, Object object) {
+    private Object setJsonValue(Integer integer, @Nullable Object object) {
         Object obj = null;
         try {
             obj = new JSONParser().parse(new FileReader("blameseb.json"));
@@ -144,20 +150,33 @@ public class MessageListener extends ListenerAdapter {
         }
         JSONObject jsonObject = (JSONObject) obj;
 
-        long blameseb = (long) jsonObject.get("blameseb");
-        long forgiveseb = (long) jsonObject.get("forgiveseb");
-        boolean restricted = (boolean) jsonObject.get("restricted");
-        boolean toggled = (boolean) jsonObject.get("toggled");
 
-        Object[] toReturn = new Object[]{blameseb, forgiveseb, restricted, toggled};
-        return toReturn;
+        if (integer == 0) {
+            long blameseb = (long) jsonObject.get("blameseb");
+            jsonObject.put("blameseb", blameseb + 1);
+            Object returnValue = blameseb + 1;
+            return returnValue;
+        } else if (integer == 1) {
+            long forgiveseb = (long) jsonObject.get("forgiveseb");
+            jsonObject.put("forgiveseb", forgiveseb + 1);
+            Object returnValue = forgiveseb + 1;
+            return returnValue;
+        } else if (integer == 2) {
+            jsonObject.put("restricted", object);
+            return object;
+        } else if (integer == 3) {
+            jsonObject.put("toggled", object);
+            return object;
+        } else {
+            System.out.printf("ERROR: in setJsonValue()");
+            return null;
+        }
     }
 
     private String getCat() {
         try {
             URL url = new URL("https://api.thecatapi.com/v1/images/search");
-            new Frame().setVisible(true);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(url.openConnection().getInputStream()));
             Object parser = new JSONParser().parse(reader);
             JSONArray jsonArray = (JSONArray) parser;
 
