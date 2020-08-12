@@ -12,6 +12,7 @@ import org.json.simple.parser.ParseException;
 import javax.security.auth.login.LoginException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -41,7 +42,6 @@ public class Core {
             System.out.println(blameseb);
 
         } catch (FileNotFoundException e) {
-            //e.printStackTrace();
             createJsonFile();
             System.out.printf("Creating JSON file...");
         } catch (IOException | ParseException e) {
@@ -59,9 +59,18 @@ public class Core {
         blameseb.put("blameseb", 0);
         blameseb.put("forgiveseb", 0);
 
-        try {
+        /*try {
             Files.write(Paths.get("blameseb.json"), blameseb.toJSONString().getBytes());
             System.out.printf("Created JSON file.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
+
+        try (FileWriter file = new FileWriter("blameseb.json")) {
+
+            file.write(blameseb.toJSONString());
+            file.flush();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
