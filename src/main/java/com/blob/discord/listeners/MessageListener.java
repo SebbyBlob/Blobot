@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.util.Map;
 
 public class MessageListener extends ListenerAdapter {
 
@@ -25,8 +26,22 @@ public class MessageListener extends ListenerAdapter {
                 if (readJsonFile()[3].equals(true)) {
                     //
                     if (event.getMessage().getContentRaw().equalsIgnoreCase("blame seb")) {
-                        setJsonValue(0, null);
-                        event.getChannel().sendMessage("**" + event.getAuthor().getName() + " has blamed Seb for the " + readJsonFile()[0] + " time!**").queue();
+                        //try adding to file instead of put
+                        //re write whole file?
+                        System.out.println("went to right");
+                        /*setJsonValue(0, null);
+                        event.getChannel().sendMessage("**" + event.getAuthor().getName() + " has blamed Seb for the " + readJsonFile()[0] + " time!**").queue();*/
+                        Object obj = null;
+                        try {
+                            obj = new JSONParser().parse(new FileReader("blameseb.json"));
+                        } catch (IOException | ParseException e) {
+                            e.printStackTrace();
+                        }
+                        JSONObject jsonObject = (JSONObject) obj;
+
+                        long blameseb = (long) jsonObject.get("blameseb");
+                        jsonObject.put("blameseb", blameseb + 1);
+
                     } else if (event.getMessage().getContentRaw().equalsIgnoreCase("forgive seb")) {
                         setJsonValue(1, null);
                         event.getChannel().sendMessage("**" + event.getAuthor().getName() + " has forgiven Seb for the " + readJsonFile()[1] + " time!**").queue();
@@ -61,7 +76,7 @@ public class MessageListener extends ListenerAdapter {
                         if (restrictedState == true) {
                             setJsonValue(2, false);
                             event.getChannel().sendMessage("Blobot commands are now allowed in all channels.").queue();
-                        } else  {
+                        } else {
                             setJsonValue(2, true);
                             event.getChannel().sendMessage("Blobot commands are now Only allowed in " + event.getJDA().getGuildChannelById("") + " .").queue();
                         }
@@ -107,6 +122,15 @@ public class MessageListener extends ListenerAdapter {
                         JSONObject jsonObject = (JSONObject) readJsonFile()[3];
                         jsonObject.put("toggled", false);
                         event.getChannel().sendMessage("Disabled Blobot commands!").queue();
+                    } else if (event.getMessage().getContentRaw().equalsIgnoreCase("blobot restricted")) {
+                        boolean restrictedState = (boolean) readJsonFile()[2];
+                        if (restrictedState == true) {
+                            setJsonValue(2, false);
+                            event.getChannel().sendMessage("Blobot commands are now allowed in all channels.").queue();
+                        } else {
+                            setJsonValue(2, true);
+                            event.getChannel().sendMessage("Blobot commands are now Only allowed in " + event.getJDA().getGuildChannelById("") + " .").queue();
+                        }
                     }
                     //
                 } else if (readJsonFile()[3].equals(false)) {
@@ -149,7 +173,6 @@ public class MessageListener extends ListenerAdapter {
             e.printStackTrace();
         }
         JSONObject jsonObject = (JSONObject) obj;
-
 
         if (integer == 0) {
             long blameseb = (long) jsonObject.get("blameseb");
