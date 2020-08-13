@@ -23,10 +23,10 @@ public class MessageListener extends ListenerAdapter {
                     //
                     if (event.getMessage().getContentRaw().equalsIgnoreCase("blame seb")) {
                         setJsonValue(0, null);
-                        EmbedBuilder eb = new EmbedBuilder();
+                        /*EmbedBuilder eb = new EmbedBuilder();
                         eb.setTitle("");
                         eb.setColor();
-                        eb.setAuthor()
+                        eb.setAuthor() */
                         event.getChannel().sendMessage("**" + event.getAuthor().getName() + " has blamed Seb for the " + readJsonFile()[0] + " time!**").queue();
                     } else if (event.getMessage().getContentRaw().equalsIgnoreCase("forgive seb")) {
                         setJsonValue(1, null);
@@ -76,6 +76,10 @@ public class MessageListener extends ListenerAdapter {
                     //
                     if (event.getMessage().getContentRaw().equalsIgnoreCase("blame seb")) {
                         setJsonValue(0, null);
+                        /*EmbedBuilder eb = new EmbedBuilder();
+                        eb.setTitle("");
+                        eb.setColor();
+                        eb.setAuthor() */
                         event.getChannel().sendMessage("**" + event.getAuthor().getName() + " has blamed Seb for the " + readJsonFile()[0] + " time!**").queue();
                     } else if (event.getMessage().getContentRaw().equalsIgnoreCase("forgive seb")) {
                         setJsonValue(1, null);
