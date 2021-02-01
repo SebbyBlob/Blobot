@@ -5,31 +5,32 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import javax.annotation.Nullable;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 
-public class JSONManager {
+public class BlameSebJSONManager {
 
-    public Object[] readJsonFile() {
-        Object obj = null;
-        try {
-            obj = new JSONParser().parse(new FileReader("blameseb.json"));
+    //on Startup
+    public void initiateJson() {
+        JSONParser jsonParser = new JSONParser();
+
+        try (FileReader reader = new FileReader("blameseb.json")) {
+
+            Object obj = jsonParser.parse(reader);
+
+            JSONObject blameseb = (JSONObject) obj;
+            System.out.println(blameseb);
+
+        } catch (FileNotFoundException e) {
+            createJsonFileBlameSeb();
+            System.out.printf("Creating JSON file...");
         } catch (IOException | ParseException e) {
+            createJsonFileBlameSeb();
+            System.out.println("[Log] ParseExpection");
             e.printStackTrace();
         }
-        JSONObject jsonObject = (JSONObject) obj;
-
-        long blameseb = (long) jsonObject.get("blameseb");
-        long forgiveseb = (long) jsonObject.get("forgiveseb");
-        boolean restricted = (boolean) jsonObject.get("restricted");
-        boolean toggled = (boolean) jsonObject.get("toggled");
-
-        Object[] toReturn = new Object[]{blameseb, forgiveseb, restricted, toggled};
-        return toReturn;
     }
 
+    //Set Json File Values
     public Object setJsonValue(Integer integer, @Nullable Object object) {
         Object obj = null;
         try {
@@ -59,12 +60,17 @@ public class JSONManager {
             jsonObject.put("toggled", object);
             writeJsonFile(jsonObject);
             return object;
+        } else if (integer == 4) {
+            jsonObject.put("lastSentT", object);
+            writeJsonFile(jsonObject);
+            return object;
         } else {
-            System.out.printf("ERROR: in setJsonValue()");
+            System.out.print("ERROR: in setJsonValue()");
             return null;
         }
     }
 
+    //Writes set values to JSON File
     public void writeJsonFile(JSONObject jsonObject) {
         try (FileWriter file = new FileWriter("blameseb.json")) {
 
@@ -76,27 +82,28 @@ public class JSONManager {
         }
     }
 
-    //
-
-    public void initiateJson() {
-        JSONParser jsonParser = new JSONParser();
-
-        try (FileReader reader = new FileReader("blameseb.json")) {
-
-            Object obj = jsonParser.parse(reader);
-
-            JSONObject blameseb = (JSONObject) obj;
-            System.out.println(blameseb);
-
-        } catch (FileNotFoundException e) {
-            createJsonFile();
-            System.out.printf("Creating JSON file...");
+    //Reads blameseb.json
+    public Object[] readJsonFile() {
+        Object obj = null;
+        try {
+            obj = new JSONParser().parse(new FileReader("blameseb.json"));
         } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
+        JSONObject jsonObject = (JSONObject) obj;
+
+        long blameseb = (long) jsonObject.get("blameseb");
+        long forgiveseb = (long) jsonObject.get("forgiveseb");
+        boolean restricted = (boolean) jsonObject.get("restricted");
+        boolean toggled = (boolean) jsonObject.get("toggled");
+        Long lastSentT = (Long) jsonObject.get("lastSentT");
+
+        Object[] toReturn = new Object[]{blameseb, forgiveseb, restricted, toggled, lastSentT};
+        return toReturn;
     }
 
-    private static void createJsonFile() {
+    //Create blameseb.json
+    private static void createJsonFileBlameSeb() {
 
         JSONObject blameseb = new JSONObject();
         //restricted; true = commands only allowed in bot commands, false = commands allowed in any channel
@@ -104,6 +111,7 @@ public class JSONManager {
         blameseb.put("toggled", true);
         blameseb.put("blameseb", 0);
         blameseb.put("forgiveseb", 0);
+        blameseb.put("lastSentT", null);
 
         /*try {
             Files.write(Paths.get("blameseb.json"), blameseb.toJSONString().getBytes());

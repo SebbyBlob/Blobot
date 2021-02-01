@@ -25,4 +25,12 @@ public class ImageGenerator {
         return imageSrc;
     }
 
+    public String getDog() {
+        List<String> imagesList = new HtmlReader().getDogImagesList();
+        imagesList.remove(exclude.get("dog"));
+        String imageSrc = imagesList.get(random.nextInt(imagesList.size()));
+        exclude.put("dog", imageSrc);
+        return imageSrc;
+    }
+
 }
