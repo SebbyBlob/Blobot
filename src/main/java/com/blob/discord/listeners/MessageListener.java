@@ -12,7 +12,8 @@ import java.util.concurrent.TimeUnit;
 
 public class MessageListener extends ListenerAdapter {
 
-    Random random = new Random();
+    private Random random = new Random();
+    private int playersAnswered = 1;
 
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.isFromType(ChannelType.TEXT) && !event.getAuthor().getId().equals("741780707109765150")) {
@@ -57,24 +58,29 @@ public class MessageListener extends ListenerAdapter {
             //Quick Maths checker
             if (FunCmds.isQuickMathsInProgress() == true) {
                 String[] messageSplit = rawMessage.split(" ");
-                System.out.println("0");
-                if (messageSplit.length == 0) {
-                    System.out.println("1");
-                    for (int i = 0; 1 < messageSplit[0].length(); i++) {
-                        System.out.println("2");
-                        if (messageSplit[0].charAt(i) >= '0' && messageSplit[0].charAt(i) <= '9') {
-                            System.out.println("3");
-                            if (messageSplit[0].equalsIgnoreCase(FunCmds.getAnswer())) {
-                                System.out.println("4");
-                                event.getMessage().reply("[Log] Correct!").queue();
-                                FunCmds.setQuickMathsInProgress(false);
-                            } else {
-                                System.out.println("5");
-                                event.getMessage().reply("[Log] Incorrect!").queue();
-                            }
-                        } else {
+                if (messageSplit.length == 1) {
+                    for (int i = 0; i < messageSplit[0].length(); i++) {
+                        if (!(messageSplit[0].charAt(i) >= '0' && messageSplit[0].charAt(i) <= '9')) {
                             return;
                         }
+                    }
+                    System.out.println("message split " + messageSplit[0]);
+                    System.out.println("answer " + FunCmds.getAnswer());
+                    if (messageSplit[0].equalsIgnoreCase(FunCmds.getAnswer())) {
+                        if (playersAnswered == 1) {
+                            event.getMessage().reply("**QUICK MATHS:** #1 " + event.getMember().getEffectiveName() + " answered correctly in " + ).queue();
+                            playersAnswered = 2;
+                        } else if (playersAnswered == 2) {
+                            event.getMessage().reply("**QUICK MATHS:** #2 " + event.getMember().getEffectiveName() + " answered correctly in " + ).queue();
+                            playersAnswered = 3;
+                        } else if (playersAnswered == 3) {
+                            FunCmds.setQuickMathsInProgress(false);
+                            event.getMessage().reply("**QUICK MATHS:** #3 " + event.getMember().getEffectiveName() + " answered correctly in " + ).queue();
+                            playersAnswered = 1;
+                        }
+                    } else {
+                        System.out.println("5");
+                        event.getMessage().reply("That is not the right answer! :(").queue();
                     }
                 }
             }

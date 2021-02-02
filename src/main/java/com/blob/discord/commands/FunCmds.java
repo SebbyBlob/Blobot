@@ -22,7 +22,7 @@ public class FunCmds {
         Random random = new Random();
 
         String equation = "";
-        int answer = 0;
+        int answerInt = 0;
 
         int randomType = random.nextInt(3);
         if (randomType == 0) {
@@ -30,21 +30,22 @@ public class FunCmds {
             int expression1 = random.nextInt(1000);
             int expression2 = random.nextInt(1000);
             equation = expression1 + "+" + expression2;
-            answer = expression1 + expression2;
+            answerInt = expression1 + expression2;
         } else if (randomType == 1) {
             //Subtraction
             int expression1 = random.nextInt(1000);
             int expression2 = random.nextInt(expression1 - 10);
             equation = expression1 + "-" + expression2;
-            answer = expression1 - expression2;
+            answerInt = expression1 - expression2;
         } else {
             //Multiplication
             int expression1 = random.nextInt(50);
             int expression2 = random.nextInt(50);
             equation = expression1 + "x" + expression2;
-            answer = expression1 * expression2;
+            answerInt = expression1 * expression2;
         }
-        answer = Integer.parseInt(String.valueOf(answer));
+        answer = String.valueOf(answerInt);
+        System.out.println(answer);
         quickMathsInProgress = true;
 
         channel.sendMessage("**QUICK MATHS:** First 3 people to answer are cool!" +
