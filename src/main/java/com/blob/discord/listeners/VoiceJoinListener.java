@@ -35,7 +35,9 @@ public class VoiceJoinListener extends ListenerAdapter {
     }
 
     public void onStartup() {
-        Core.getJDA().getVoiceChannelsByName("\uD83C\uDFA4 General", false).get(0)
+        Core.getJDA().getGuildById("").getVoiceChannelsByName("\uD83C\uDFA4 General", false).get(0);
+        Core.getJDA().getGuildById("").getVoiceChannelsByName("\uD83C\uDFA4 Gaming", false).get(0);
+        Core.getJDA().getGuildById("").getVoiceChannelsByName("\uD83C\uDFA4 Yeetus Voice", false).get(0);
         for (VoiceChannel channel : Core.getJDA().getCategoryById("").getVoiceChannels()) {
 
         }
