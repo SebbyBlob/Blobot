@@ -46,7 +46,13 @@ public class CmdMessageListener extends ListenerAdapter {
                                 //Fun Commands
                                 case "quickmaths":
                                 case "quick maths":
-                                    new FunCmds().quickMaths(event.getChannel(), event.getMessage());
+                                    new FunCmds().quickMaths(event.getChannel(), event.getMessage(), event.getAuthor());
+                                    break;
+                                case "quickmaths end":
+                                case "quick maths end":
+                                case "quickmaths stop":
+                                case "quick maths stop":
+                                    new FunCmds().endQuickMaths(event.getMessage(), event.getChannel(), event.getAuthor());
                                     break;
                                 case "cat":
                                     new FunCmds().cat(event.getChannel());
@@ -146,6 +152,10 @@ public class CmdMessageListener extends ListenerAdapter {
         blobotCmds.add("test");
         blobotCmds.add("quick maths");
         blobotCmds.add("quickmaths");
+        blobotCmds.add("quickmaths end");
+        blobotCmds.add("quick maths end");
+        blobotCmds.add("quickmaths stop");
+        blobotCmds.add("quick maths stop");
     }
 
 }

@@ -7,14 +7,18 @@ import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 public class MessageListener extends ListenerAdapter {
 
     private Random random = new Random();
-    private int playersAnswered = 1;
+    private int usersAnswered = 1;
+    private List<Long> usersCompleted = new ArrayList<Long>();
 
+    @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.isFromType(ChannelType.TEXT) && !event.getAuthor().getId().equals("741780707109765150")) {
             String rawMessage = event.getMessage().getContentRaw();
@@ -57,34 +61,51 @@ public class MessageListener extends ListenerAdapter {
             }
             //Quick Maths checker
             if (FunCmds.isQuickMathsInProgress() == true) {
-                String[] messageSplit = rawMessage.split(" ");
-                if (messageSplit.length == 1) {
-                    for (int i = 0; i < messageSplit[0].length(); i++) {
-                        if (!(messageSplit[0].charAt(i) >= '0' && messageSplit[0].charAt(i) <= '9')) {
-                            return;
+                if (event.getChannel().equals(FunCmds.getChannelStarted())) {
+                    String[] messageSplit = rawMessage.split(" ");
+                    if (messageSplit.length == 1) {
+                        for (int i = 0; i < messageSplit[0].length(); i++) {
+                            if (!(messageSplit[0].charAt(i) >= '0' && messageSplit[0].charAt(i) <= '9')) {
+                                return;
+                            }
                         }
-                    }
-                    System.out.println("message split " + messageSplit[0]);
-                    System.out.println("answer " + FunCmds.getAnswer());
-                    if (messageSplit[0].equalsIgnoreCase(FunCmds.getAnswer())) {
-                        if (playersAnswered == 1) {
-                            event.getMessage().reply("**QUICK MATHS:** #1 " + event.getMember().getEffectiveName() + " answered correctly in " + ).queue();
-                            playersAnswered = 2;
-                        } else if (playersAnswered == 2) {
-                            event.getMessage().reply("**QUICK MATHS:** #2 " + event.getMember().getEffectiveName() + " answered correctly in " + ).queue();
-                            playersAnswered = 3;
-                        } else if (playersAnswered == 3) {
-                            FunCmds.setQuickMathsInProgress(false);
-                            event.getMessage().reply("**QUICK MATHS:** #3 " + event.getMember().getEffectiveName() + " answered correctly in " + ).queue();
-                            playersAnswered = 1;
+                        if (!usersCompleted.contains(event.getAuthor().getIdLong())) {
+                            if (messageSplit[0].equalsIgnoreCase(FunCmds.getAnswer())) {
+                                event.getMessage().delete().queue();
+                                int elapsedTimeSinceCreation = (int) ((System.currentTimeMillis() - FunCmds.getCreationTime()) / 10);
+                                String displaySeconds = "" + elapsedTimeSinceCreation;
+                                displaySeconds = displaySeconds.substring(0, displaySeconds.length()-2) + "." + displaySeconds.substring(displaySeconds.length()-1);
+                                if (usersAnswered == 1) {
+                                    event.getChannel().sendMessage("**QUICK MATHS:** :first_place: " + event.getMember().getAsMention() + " answered correctly in " + displaySeconds + " seconds").queue();
+                                    usersCompleted.add(event.getAuthor().getIdLong());
+                                    usersAnswered = 2;
+                                } else if (usersAnswered == 2) {
+                                    event.getChannel().sendMessage("**QUICK MATHS:** :second_place: " + event.getMember().getAsMention() + " answered correctly in " + displaySeconds + " seconds").queue();
+                                    usersCompleted.add(event.getAuthor().getIdLong());
+                                    usersAnswered = 3;
+                                } else if (usersAnswered == 3) {
+                                    FunCmds.setQuickMathsInProgress(false);
+                                    event.getChannel().sendMessage("**QUICK MATHS:** :third_place: " + event.getMember().getAsMention() + " answered correctly in " + displaySeconds + " seconds").queue();
+                                    event.getChannel().sendMessage("**QUICK MATHS OVER:** " + FunCmds.getEquation() + " = " + FunCmds.getAnswer()).queue();
+                                    usersCompleted.clear();
+                                    usersAnswered = 1;
+                                }
+                            } else {
+                                event.getMessage().reply("That is not the right answer! :(").queue();
+                            }
+                        } else {
+                            event.getMessage().delete().queue();
+                            event.getChannel().sendMessage(event.getAuthor().getAsMention() + " You can't answer again!").queue(message -> {
+                                message.delete().queueAfter(3, TimeUnit.SECONDS);
+                            });;
                         }
-                    } else {
-                        System.out.println("5");
-                        event.getMessage().reply("That is not the right answer! :(").queue();
                     }
                 }
             }
         }
     }
+
+    public void setUsersAnswered(int usersAnswered) { this.usersAnswered = usersAnswered; }
+    public List<Long> getUsersCompleted() { return usersCompleted; }
 
 }

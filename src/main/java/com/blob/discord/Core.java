@@ -1,7 +1,6 @@
 package com.blob.discord;
 
-import com.blob.discord.listeners.CmdMessageListener;
-import com.blob.discord.listeners.MessageListener;
+import com.blob.discord.listeners.*;
 import com.blob.discord.utilities.BlameSebJSONManager;
 import com.blob.discord.utilities.TDataJSONManager;
 import com.blob.discord.utilities.TUtils;
@@ -28,6 +27,9 @@ public class Core {
         builder.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE);
         builder.addEventListeners(new CmdMessageListener());
         builder.addEventListeners(new MessageListener());
+        builder.addEventListeners(new VoiceJoinListener());
+        builder.addEventListeners(new VoiceLeaveListener());
+        builder.addEventListeners(new VoiceMoveListener());
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setActivity(Activity.watching("TGU"));
 
@@ -38,6 +40,7 @@ public class Core {
         new BlameSebJSONManager().initiateJson();
         new TDataJSONManager().initiateJson();
         new TUtils().onStartup();
+        new VoiceJoinListener().onStartup();
         //new HtmlReader().onStartup();
 
     }
