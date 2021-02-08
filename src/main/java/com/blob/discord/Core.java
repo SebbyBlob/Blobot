@@ -2,6 +2,7 @@ package com.blob.discord;
 
 import com.blob.discord.listeners.*;
 import com.blob.discord.utilities.BlameSebJSONManager;
+import com.blob.discord.utilities.HtmlReader;
 import com.blob.discord.utilities.TDataJSONManager;
 import com.blob.discord.utilities.TUtils;
 import net.dv8tion.jda.api.JDA;
@@ -19,12 +20,14 @@ public class Core {
 
     private static JDA jda;
     private static Logger logger = LoggerFactory.getLogger("Blobot");
+    private static VoiceJoinListener voiceJoinListener = new VoiceJoinListener();
 
-    public static void main(String[] args) throws LoginException, ParseException, InterruptedException {
+    public static void main(String[] args) throws LoginException, InterruptedException {
 
         JDABuilder builder = JDABuilder.createDefault("NzQxNzgwNzA3MTA5NzY1MTUw.Xy8jHg.XnfQfT7FYZMbpB7y6zc3jxjTj3U");
 
-        builder.disableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE);
+        //Enable voice state when testing next
+        builder.disableCache(CacheFlag.MEMBER_OVERRIDES);
         builder.addEventListeners(new CmdMessageListener());
         builder.addEventListeners(new MessageListener());
         builder.addEventListeners(new VoiceJoinListener());
@@ -40,12 +43,13 @@ public class Core {
         new BlameSebJSONManager().initiateJson();
         new TDataJSONManager().initiateJson();
         new TUtils().onStartup();
-        new VoiceJoinListener().onStartup();
+        //new VoiceJoinListener().onStartup();
+        voiceJoinListener.onStartup();
         //new HtmlReader().onStartup();
 
     }
 
     public static JDA getJDA() { return jda; }
     public static Logger getLogger() { return logger; }
-
+    public static VoiceJoinListener getVoiceJoinListener() { return voiceJoinListener; }
 }

@@ -43,14 +43,14 @@ public class FunCmds {
                 answerInt = expression1 + expression2;
             } else if (randomType == 1) {
                 //Subtraction
-                int expression1 = random.nextInt(1000);
+                int expression1 = random.nextInt(500);
                 int expression2 = random.nextInt(expression1 - 10);
                 equation = expression1 + "-" + expression2;
                 answerInt = expression1 - expression2;
             } else {
                 //Multiplication
                 int expression1 = random.nextInt(50);
-                int expression2 = random.nextInt(50);
+                int expression2 = random.nextInt(expression1 - 5);
                 equation = expression1 + "x" + expression2;
                 answerInt = expression1 * expression2;
             }

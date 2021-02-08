@@ -26,7 +26,9 @@ public class HelpCmd {
                         "\n`dog` **-** Gives you a random dog image" +
                         "\n`hedgehog` **-** Gives you a random hedgehog image" +
                         "\n`groundhog` **-** Gives you a random groundhog image" +
-                        "\n`ping me` **-** Pings you")
+                        "\n`ping me` **-** Pings you" +
+                        "\n\n__Other Commands__:" +
+                        "\n`t leaderboard` **-** Shows a top 5 leaderboard of who has the most t's in #t")
                 .setFooter("Developed by Sebby", "https://i.imgur.com/PpzENVl.png");
         channel.sendMessage(eb.build()).queue();
 

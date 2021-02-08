@@ -23,6 +23,7 @@ public class HtmlReader {
     public void onStartup() {
         findHedgehogImages();
         findGroundhogImages();
+        findDogImages();
     }
 
     private void findHedgehogImages() {
@@ -108,7 +109,7 @@ public class HtmlReader {
                         if (Integer.parseInt(imgs.attr("height")) > 50) {
                             String sourceUrl = el.attr("abs:data-src");
                             amount++;
-                            groundhogImagesList.add(sourceUrl);
+                            dogImagesList.add(sourceUrl);
                         }
                     }
                 }

@@ -7,8 +7,6 @@ import java.util.*;
 
 public class TUtils {
 
-    private HashMap<String, Integer> tLeaderboard = new HashMap<>();
-
     public void onStartup() {
         if (!(new BlameSebJSONManager().readJsonFile()[4] == null)) {
             Message lastSentT = Core.getJDA().getTextChannelById("770731649569783829").retrieveMessageById((Long) new BlameSebJSONManager().readJsonFile()[4]).complete();
@@ -86,20 +84,14 @@ public class TUtils {
         }
 
         List<Map.Entry<String, Long>> list = new LinkedList<Map.Entry<String, Long>>(jsonFileHashMap.entrySet());
-        Collections.sort(list, new Comparator<Map.Entry<String, Long>>() {
+        list.sort(new Comparator<Map.Entry<String, Long>>() {
             @Override
             public int compare(Map.Entry<String, Long> o1, Map.Entry<String, Long> o2) {
                 return o2.getValue().compareTo(o1.getValue());
             }
         });
 
-        /*for (Map.Entry<String, Integer> item : list) {
-            System.out.println(item);
-        }*/
-
         return list;
     }
-
-    public HashMap<String, Integer> getTLeaderboard() { return tLeaderboard; }
 
 }

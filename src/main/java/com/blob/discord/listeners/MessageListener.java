@@ -3,6 +3,7 @@ package com.blob.discord.listeners;
 import com.blob.discord.Core;
 import com.blob.discord.commands.FunCmds;
 import com.blob.discord.utilities.BlameSebJSONManager;
+import com.blob.discord.utilities.TDataJSONManager;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -22,7 +23,8 @@ public class MessageListener extends ListenerAdapter {
     public void onMessageReceived(MessageReceivedEvent event) {
         if (event.isFromType(ChannelType.TEXT) && !event.getAuthor().getId().equals("741780707109765150")) {
             String rawMessage = event.getMessage().getContentRaw();
-            //ok boomer response
+
+            //1 in 10 chance of replying with "ok boomer" when someone says "ok" or variant
             if (new BlameSebJSONManager().readJsonFile()[3] == (Boolean) true) {
                 String lowerCaseMsg = rawMessage.toLowerCase();
                 String[] messageSplit = lowerCaseMsg.split(" ");
@@ -30,10 +32,11 @@ public class MessageListener extends ListenerAdapter {
                     int i = random.nextInt(10);
                     if (i == 1) {
                         Core.getLogger().info(event.getAuthor().getName() + " triggered an ok boomer: " + rawMessage);
-                        event.getChannel().sendMessage("ok boomer").queue();
+                        event.getMessage().reply("ok boomer").queue();
                     }
                 }
             }
+
             //#t protection
             if (event.getChannel().getId().equals("770731649569783829")) {
                 if (!rawMessage.equals("t")) {
@@ -52,13 +55,14 @@ public class MessageListener extends ListenerAdapter {
                                         message1.delete().queueAfter(3, TimeUnit.SECONDS);
                                     });
                                 } else {
-                                    //add t to count & last t sent
-                                    event.getMessage().getId();
+                                    new TDataJSONManager().addTDataJsonValue(event.getAuthor().getId());
+                                    new BlameSebJSONManager().setJsonValue(4, event.getMessage().getIdLong());
                                 }
                             });
 
                 }
             }
+
             //Quick Maths checker
             if (FunCmds.isQuickMathsInProgress() == true) {
                 if (event.getChannel().equals(FunCmds.getChannelStarted())) {
