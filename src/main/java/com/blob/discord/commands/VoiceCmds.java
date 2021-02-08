@@ -32,8 +32,9 @@ public class VoiceCmds {
         if (privateAutoVoiceChannels.containsKey(member.getIdLong())) {
             guild.getVoiceChannelById(privateAutoVoiceChannels.get(member.getIdLong())).getManager().
                     putPermissionOverride(invitedMember, EnumSet.of(Permission.VIEW_CHANNEL, Permission.VOICE_CONNECT), null).queue();
+            message.reply("Successfully added " + invitedMember.getEffectiveName() + " to your private Voice channel!").queue();
         } else {
-            message.reply("You do not currently have a Private Voice channel!");
+            message.reply("You do not currently have a Private Voice channel!").queue();
         }
     }
 

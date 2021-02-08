@@ -110,22 +110,6 @@ public class CmdMessageListener extends ListenerAdapter {
                             case "t leaderboard":
                                 new OtherCmds().tLeaderboard(event.getChannel(), event.getAuthor(), event.getGuild());
                                 break;
-                            /*Fire commands:
-                                fire start
-
-                                fire blow
-                                fire add wood
-                                fire wood
-
-                                fire smother
-
-                                fire explore
-
-                                fire points
-                             */
-                            case "test":
-
-                                break;
                         }
                         //Cooldown logic
                         cooldown.put(event.getAuthor(), System.currentTimeMillis() + (2 * 1000));
@@ -147,8 +131,7 @@ public class CmdMessageListener extends ListenerAdapter {
                         if (event.getGuild().getMemberByTag(messageSplit[1].substring(1)) != null) {
                             new VoiceCmds().inviteUserToPrivateVoice(event.getGuild(), event.getMessage(), event.getMember(), event.getGuild().getMemberByTag(messageSplit[1].substring(1)));
                         } else {
-                            //not done
-                            event.getMessage().reply("The provided user is invalid! Cmd format: vcinvite ");
+                            event.getMessage().reply("The provided user is invalid! Cmd format: vcinvite " + event.getGuild().getSelfMember().getAsMention());
                         }
                     }
                 }
