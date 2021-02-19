@@ -35,7 +35,8 @@ public class VoiceMoveListener extends ListenerAdapter {
                     && event.getChannelJoined().getName().split(" ").length >= 2 && event.getChannelJoined().getName().split(" ")[1].matches("General|Gaming|Yeetus"))
                 channelJoinedTypeShort = event.getChannelJoined().getName().split(" ")[1];
 
-            if (channelLeftTypeShort == null || !channelLeftTypeShort.equals(channelJoinedTypeShort)) {
+            if (channelLeftTypeShort == null || !channelLeftTypeShort.equals(channelJoinedTypeShort)
+                    || (channelLeftTypeShort.equals(channelJoinedTypeShort) && event.getChannelJoined().getMembers().size() == 1)) {
 
                 //Voice channel leaving
                 if (event.getChannelLeft().getParent() != null
