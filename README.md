@@ -5,11 +5,12 @@ Custom coded Discord bot made with Discord JDA, for TGU (private discord server)
 ## Features
 
 **- Automatic Voice Channels:** For each type of automatic voice channels (General, Gaming, or Yeetus Voice) there will Always be 1 empty voice channel up to 4 channels per type.
+
 *Example: If 2 users join "General" and than 1 user joins "General 2" than there will be a total of 3 General VC's (General 1, 2, & 3).*
 
 **- Private Voice Channels:** Type `vccreate` to create a Private VC only you can join, invite other users into your VC by typing `vcinvite @User`.
 
-**#t Protection:** Automatically protects #t by blocking users from sending messages other than "t" & sending "t"'s twice or more in a row by the same user.
+**- #t Protection:** Automatically protects #t by blocking users from sending messages other than "t" & sending "t"'s twice or more in a row by the same user.
 
 ## Commands
 
