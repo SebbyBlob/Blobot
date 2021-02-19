@@ -9,47 +9,58 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.security.auth.login.LoginException;
-import java.text.ParseException;
 
 public class Core {
 
+    public final Long AutoVCGuildId = 530904600119869450L;
+    public final Long AutoVCCategoryId = 809518946079211600L;
+
     private static JDA jda;
     private static Logger logger = LoggerFactory.getLogger("Blobot");
-    private static VoiceJoinListener voiceJoinListener = new VoiceJoinListener();
 
     public static void main(String[] args) throws LoginException, InterruptedException {
 
-        JDABuilder builder = JDABuilder.createDefault("NzQxNzgwNzA3MTA5NzY1MTUw.Xy8jHg.XnfQfT7FYZMbpB7y6zc3jxjTj3U");
+        //Checks if there is a bot token provided
+        if (args.length != 1) {
+            Core.getLogger().error("No bot token provided! Shutting down...");
+            System.exit(1);
+        }
 
-        //Enable voice state when testing next
-        builder.disableCache(CacheFlag.MEMBER_OVERRIDES);
-        builder.addEventListeners(new CmdMessageListener());
-        builder.addEventListeners(new MessageListener());
-        builder.addEventListeners(new VoiceJoinListener());
-        builder.addEventListeners(new VoiceLeaveListener());
-        builder.addEventListeners(new VoiceMoveListener());
+        JDABuilder builder = JDABuilder.createDefault(args[0]);
+
+        builder.setMemberCachePolicy(MemberCachePolicy.ALL);
+        builder.enableIntents(GatewayIntent.GUILD_MEMBERS);
+        builder.disableCache(CacheFlag.ACTIVITY, CacheFlag.EMOTE, CacheFlag.CLIENT_STATUS);
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setActivity(Activity.watching("TGU"));
 
         jda = builder.build();
         jda.awaitReady();
 
+        jda.addEventListener(new CmdMessageListener());
+        jda.addEventListener(new MessageListener());
+        jda.addEventListener(new VoiceJoinListener());
+        jda.addEventListener(new VoiceLeaveListener());
+        jda.addEventListener(new VoiceMoveListener());
+        jda.addEventListener(new GuildUserLeaveListener());
+        jda.addEventListener(new GuildUserJoinListener());
+
         new CmdMessageListener().onStartup();
         new BlameSebJSONManager().initiateJson();
         new TDataJSONManager().initiateJson();
         new TUtils().onStartup();
-        //new VoiceJoinListener().onStartup();
-        voiceJoinListener.onStartup();
-        //new HtmlReader().onStartup();
+        VoiceJoinListener.getInstance().onStartup();
+        new HtmlReader().onStartup();
 
     }
 
     public static JDA getJDA() { return jda; }
     public static Logger getLogger() { return logger; }
-    public static VoiceJoinListener getVoiceJoinListener() { return voiceJoinListener; }
 }

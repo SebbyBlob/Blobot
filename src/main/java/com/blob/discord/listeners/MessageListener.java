@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 public class MessageListener extends ListenerAdapter {
 
-    private Random random = new Random();
+    private final Random Random = new Random();
     private int usersAnswered = 1;
     private List<Long> usersCompleted = new ArrayList<Long>();
 
@@ -28,8 +28,9 @@ public class MessageListener extends ListenerAdapter {
             if (new BlameSebJSONManager().readJsonFile()[3] == (Boolean) true) {
                 String lowerCaseMsg = rawMessage.toLowerCase();
                 String[] messageSplit = lowerCaseMsg.split(" ");
+                //Checks if message is equal to "ok" or variant
                 if (messageSplit[0].equals("ok") || messageSplit[0].equals("okay")) {
-                    int i = random.nextInt(10);
+                    int i = Random.nextInt(10);
                     if (i == 1) {
                         Core.getLogger().info(event.getAuthor().getName() + " triggered an ok boomer: " + rawMessage);
                         event.getMessage().reply("ok boomer").queue();
@@ -39,6 +40,7 @@ public class MessageListener extends ListenerAdapter {
 
             //#t protection
             if (event.getChannel().getId().equals("770731649569783829")) {
+                //Checks if message is not equal to "t"
                 if (!rawMessage.equals("t")) {
                     Core.getLogger().info(event.getAuthor().getName() + " sent a non-t in #t: " + rawMessage);
                     event.getMessage().delete().queue();
@@ -46,6 +48,7 @@ public class MessageListener extends ListenerAdapter {
                         message.delete().queueAfter(3, TimeUnit.SECONDS);
                     });
                 } else {
+                    //Makes sure user didn't send two t's in a row
                     event.getTextChannel().getHistory().retrievePast(2)
                             .map(messages -> messages.get(1))
                             .queue(message -> {
@@ -65,14 +68,17 @@ public class MessageListener extends ListenerAdapter {
 
             //Quick Maths checker
             if (FunCmds.isQuickMathsInProgress() == true) {
+                //Checks if channel is the quick maths channel
                 if (event.getChannel().equals(FunCmds.getChannelStarted())) {
                     String[] messageSplit = rawMessage.split(" ");
                     if (messageSplit.length == 1) {
+                        //Makes sure all characters in message are digits
                         for (int i = 0; i < messageSplit[0].length(); i++) {
                             if (!(messageSplit[0].charAt(i) >= '0' && messageSplit[0].charAt(i) <= '9')) {
                                 return;
                             }
                         }
+                        //Makes sure user isn't answering twice
                         if (!usersCompleted.contains(event.getAuthor().getIdLong())) {
                             if (messageSplit[0].equalsIgnoreCase(FunCmds.getAnswer())) {
                                 event.getMessage().delete().queue();

@@ -9,6 +9,7 @@ public class ImageGenerator {
     private Random random = new Random();
     private HashMap<String, String> exclude = new HashMap<>();
 
+    //Gets a random hedgehog image src URL from the searched hedgehog image list
     public String getHedgehog() {
         List<String> imagesList = new HtmlReader().getHedgehogImagesList();
         imagesList.remove(exclude.get("hedgehog"));
@@ -17,6 +18,7 @@ public class ImageGenerator {
         return imageSrc;
     }
 
+    //Gets a random groundhog image src URL from the searched groundhog image list
     public String getGroundhog() {
         List<String> imagesList = new HtmlReader().getGroundhogImagesList();
         imagesList.remove(exclude.get("groundhog"));
@@ -25,6 +27,7 @@ public class ImageGenerator {
         return imageSrc;
     }
 
+    //Gets a random dog image src URL from the searched dog image list
     public String getDog() {
         List<String> imagesList = new HtmlReader().getDogImagesList();
         imagesList.remove(exclude.get("dog"));

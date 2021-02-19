@@ -8,6 +8,7 @@ import org.jsoup.select.Elements;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,16 +21,23 @@ public class HtmlReader {
     private static List<String> groundhogImagesList = new ArrayList<String>();
     private static List<String> dogImagesList = new ArrayList<String>();
 
+    //Runs on bot Startup
     public void onStartup() {
         findHedgehogImages();
         findGroundhogImages();
         findDogImages();
+        Core.getLogger().info("Successfully grabbed ALL images!");
     }
 
+    //Searches google for 200 hedgehog images
     private void findHedgehogImages() {
         try {
-            System.setProperty("webdriver.chrome.driver", "C:\\WebDriver\\bin\\chromedriver.exe");
-            driver = new ChromeDriver();
+            //System.setProperty("webdriver.chrome.driver", "C:\\WebDriver\\bin\\chromedriver.exe");
+            //System.setProperty("webdriver.chrome.driver", "C:\\usr\\bin\\chromedriver.exe");
+            ChromeOptions chromeOptions = new ChromeOptions();
+            chromeOptions.addArguments("--headless");
+            chromeOptions.addArguments("--no-sandbox");
+            driver = new ChromeDriver(chromeOptions);
             JavascriptExecutor js = (JavascriptExecutor) driver;
 
             driver.get("https://www.google.com/search?tbm=isch&tbs=itp:photo&q=hedgehog");
@@ -52,15 +60,20 @@ public class HtmlReader {
                     }
                 }
             }
+            Core.getLogger().info("Successfully grabbed 200 Hedgehog images");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    //Searches google for 200 groundhog images
     private void findGroundhogImages() {
         try {
-            System.setProperty("webdriver.chrome.driver", "C:\\WebDriver\\bin\\chromedriver.exe");
-            driver = new ChromeDriver();
+            //System.setProperty("webdriver.chrome.driver", "C:\\usr\\bin\\chromedriver.exe");
+            ChromeOptions chromeOptions = new ChromeOptions();
+            chromeOptions.addArguments("--headless");
+            chromeOptions.addArguments("--no-sandbox");
+            driver = new ChromeDriver(chromeOptions);
             JavascriptExecutor js = (JavascriptExecutor) driver;
 
             driver.get("https://www.google.com/search?tbm=isch&tbs=itp:photo&q=groundhog");
@@ -83,15 +96,20 @@ public class HtmlReader {
                     }
                 }
             }
+            Core.getLogger().info("Successfully grabbed 200 Groundhog images");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    //Searches google for 200 dog images
     private void findDogImages() {
         try {
-            System.setProperty("webdriver.chrome.driver", "C:\\WebDriver\\bin\\chromedriver.exe");
-            driver = new ChromeDriver();
+            //System.setProperty("webdriver.chrome.driver", "C:\\usr\\bin\\chromedriver.exe");
+            ChromeOptions chromeOptions = new ChromeOptions();
+            chromeOptions.addArguments("--headless");
+            chromeOptions.addArguments("--no-sandbox");
+            driver = new ChromeDriver(chromeOptions);
             JavascriptExecutor js = (JavascriptExecutor) driver;
 
             driver.get("https://www.google.com/search?tbm=isch&tbs=itp:photo&q=dog");
@@ -114,6 +132,7 @@ public class HtmlReader {
                     }
                 }
             }
+            Core.getLogger().info("Successfully grabbed 200 Dog images");
         } catch (Exception e) {
             e.printStackTrace();
         }

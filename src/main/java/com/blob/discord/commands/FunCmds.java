@@ -4,6 +4,7 @@ import com.blob.discord.listeners.MessageListener;
 import com.blob.discord.utilities.CatGenerator;
 import com.blob.discord.utilities.ImageGenerator;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
@@ -49,13 +50,12 @@ public class FunCmds {
                 answerInt = expression1 - expression2;
             } else {
                 //Multiplication
-                int expression1 = random.nextInt(50);
+                int expression1 = random.nextInt(13);
                 int expression2 = random.nextInt(expression1 - 5);
                 equation = expression1 + "x" + expression2;
                 answerInt = expression1 * expression2;
             }
             answer = String.valueOf(answerInt);
-            System.out.println(answer);
             quickMathsInProgress = true;
             channelStarted = channel;
             creationTime = System.currentTimeMillis();
@@ -66,28 +66,27 @@ public class FunCmds {
     }
 
     //Stops quickmaths if it is currently in progress
-    public void endQuickMaths(Message message, MessageChannel channel, User user) {
+    public void endQuickMaths(Message message, MessageChannel channel, Member member) {
         message.delete().queue();
         if (quickMathsInProgress == true) {
             if (channel.equals(channelStarted)) {
                 quickMathsInProgress = false;
                 new MessageListener().setUsersAnswered(1);
                 new MessageListener().getUsersCompleted().clear();
-                channel.sendMessage("**QUICK MATHS OVER:** " + user.getAsMention() + " has force ended this Quick Maths game").queue();
+                channel.sendMessage("**QUICK MATHS OVER:** " + member.getEffectiveName() + " has force ended this Quick Maths game").queue();
             } else {
-                channel.sendMessage(user.getAsMention() + " There is currently no ongoing Quick Maths game in this channel!").queue(message1 -> {
+                channel.sendMessage(member.getAsMention() + " There is currently no ongoing Quick Maths game in this channel!").queue(message1 -> {
                     message1.delete().queueAfter(3, TimeUnit.SECONDS);
                 });
             }
         } else {
-            channel.sendMessage(user.getAsMention() + " There is currently no ongoing Quick Maths game!").queue(message1 -> {
+            channel.sendMessage(member.getAsMention() + " There is currently no ongoing Quick Maths game!").queue(message1 -> {
                 message1.delete().queueAfter(3, TimeUnit.SECONDS);
             });
         }
     }
 
     //Gives you a random Cat image
-
     public void cat(MessageChannel channel) {
         EmbedBuilder eb = new EmbedBuilder()
                 .setColor(new Color(251, 118, 31))
@@ -98,7 +97,6 @@ public class FunCmds {
     }
 
     //Gives you a random Dog image
-
     public void dog(MessageChannel channel) {
         EmbedBuilder eb = new EmbedBuilder()
                 .setColor(new Color(251, 118, 31))
@@ -109,7 +107,6 @@ public class FunCmds {
     }
 
     //Gives a random hedgehog image
-
     public void hedgehog(MessageChannel channel) {
         EmbedBuilder eb = new EmbedBuilder()
                 .setColor(new Color(251, 118, 31))
@@ -120,7 +117,6 @@ public class FunCmds {
     }
 
     //Gives a random groundhog image
-
     public void groundhog(MessageChannel channel) {
         EmbedBuilder eb = new EmbedBuilder()
                 .setColor(new Color(251, 118, 31))
@@ -131,7 +127,6 @@ public class FunCmds {
     }
 
     //Ping yourself command
-
     public void pingMe(MessageChannel channel, User author) {
         channel.sendMessage(author.getAsMention() + " ping pong!").queue();
     }

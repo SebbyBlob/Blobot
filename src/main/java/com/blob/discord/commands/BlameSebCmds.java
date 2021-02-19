@@ -9,12 +9,13 @@ import java.awt.*;
 public class BlameSebCmds {
 
     //Blame Seb
-
     public void blameSeb(MessageChannel channel, String name) {
+        //Creates new message Embed
         EmbedBuilder eb = new EmbedBuilder()
                 .setColor(new Color(249, 127, 57))
                 .setTitle("**" + name + " has blamed Seb for the " + new BlameSebJSONManager().setJsonValue(0, null) + " time!**");
 
+        //Checks if it is Seb's fault
         String sebsFault = null;
         long blameSeb = (long) new BlameSebJSONManager().readJsonFile()[0];
         long forgiveSeb = (long) new BlameSebJSONManager().readJsonFile()[1];
@@ -34,12 +35,13 @@ public class BlameSebCmds {
     }
 
     //Forgive Seb
-
     public void forgiveSeb(MessageChannel channel, String name) {
+        //Creates new message Embed
         EmbedBuilder eb = new EmbedBuilder()
                 .setColor(new Color(249, 127, 57))
                 .setTitle("**" + name + " has forgiven Seb for the " + new BlameSebJSONManager().setJsonValue(1, null) + " time!**");
 
+        //Checks if it is Seb's fault
         String sebsFault = null;
         long blameSeb = (long) new BlameSebJSONManager().readJsonFile()[0];
         long forgiveSeb = (long) new BlameSebJSONManager().readJsonFile()[1];
@@ -59,10 +61,11 @@ public class BlameSebCmds {
     }
 
     //Is it Seb's fault?
-
     public void isItSebsFault(MessageChannel channel) {
+        //Grabs blame/forgive seb data
         long blameSeb = (long) new BlameSebJSONManager().readJsonFile()[0];
         long forgiveSeb = (long) new BlameSebJSONManager().readJsonFile()[1];
+        //Creates new message Embed
         EmbedBuilder eb = new EmbedBuilder()
                 .setColor(new Color(249, 127, 57))
                 .setTitle("**Is it Seb's fault?**")

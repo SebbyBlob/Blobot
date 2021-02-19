@@ -12,6 +12,7 @@ import java.net.URL;
 
 public class CatGenerator {
 
+    //Grabs a random cat image src URL from Cat API
     public String getCat() {
         try {
             URL url = new URL("https://api.thecatapi.com/v1/images/search");

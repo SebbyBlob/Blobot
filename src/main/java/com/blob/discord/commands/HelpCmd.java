@@ -1,7 +1,9 @@
 package com.blob.discord.commands;
 
-import com.blob.discord.utilities.ImageGenerator;
+import com.blob.discord.utilities.RoleUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
 
 import java.awt.*;
@@ -9,9 +11,8 @@ import java.awt.*;
 public class HelpCmd {
 
     //Help Command
-
     public void blobotHelp(MessageChannel channel) {
-
+        //Creates new message Embed
         EmbedBuilder eb = new EmbedBuilder()
                 .setColor(new Color(64, 158, 230))
                 .setTitle("**Blobot Help**")
@@ -27,11 +28,32 @@ public class HelpCmd {
                         "\n`hedgehog` **-** Gives you a random hedgehog image" +
                         "\n`groundhog` **-** Gives you a random groundhog image" +
                         "\n`ping me` **-** Pings you" +
+                        "\n\n__Voice Commands__:" +
+                        "\n`vccreate` **-** Creates a Private VC only you can join" +
+                        "\n`vcinvite @User` **-** Invites users to your Private VC" +
                         "\n\n__Other Commands__:" +
                         "\n`t leaderboard` **-** Shows a top 5 leaderboard of who has the most t's in #t")
                 .setFooter("Developed by Sebby", "https://i.imgur.com/PpzENVl.png");
         channel.sendMessage(eb.build()).queue();
+    }
 
+    public void staffHelp(MessageChannel channel) {
+        //Creates new message Embed
+        EmbedBuilder eb = new EmbedBuilder()
+                .setColor(new Color(64, 158, 230))
+                .setTitle("**Blobot Help**")
+                .setDescription("" +
+                        "_All commands are case insensitive meaning you can use either lowercase or uppercase letters_" +
+                        "\n\n__Administration Commands__:" +
+                        "\n`blobot enable` **-** Enables Blobot if Blobot disabled" +
+                        "\n`blobot disable` **-** Disables Blobot if Blobot enabled" +
+                        "\n`blobot restricted` **-** Toggles Blobot cmds for use only in #bot-commands" +
+                        "\n`vcreset`/`vc reset` **-** Resets all automatic voice channels" +
+                        "\n\n__Fun Commands__:" +
+                        "\n`quickmaths` **-** Starts a Quickmaths game" +
+                        "\n`quickmaths end` **-** Stops any current Quickmaths game")
+                .setFooter("Developed by Sebby", "https://i.imgur.com/PpzENVl.png");
+        channel.sendMessage(eb.build()).queue();
     }
 
 }

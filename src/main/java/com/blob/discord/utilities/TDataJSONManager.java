@@ -1,5 +1,6 @@
 package com.blob.discord.utilities;
 
+import com.blob.discord.Core;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -12,14 +13,16 @@ public class TDataJSONManager {
     public void initiateJson() {
         JSONParser jsonParser = new JSONParser();
 
+        //Tries to read the file tdata.json
         try (FileReader reader = new FileReader("tdata.json")) {
 
             Object obj = jsonParser.parse(reader);
 
             JSONObject tdata = (JSONObject) obj;
-            System.out.println(tdata);
+            Core.getLogger().info("tdata.json values: " + tdata);
 
         } catch (FileNotFoundException e) {
+            //Creates file if not found
             createJsonFileTData();
             System.out.printf("Creating JSON file...");
         } catch (IOException | ParseException e) {
@@ -32,6 +35,7 @@ public class TDataJSONManager {
     //Sets tdata value to tdata.json
     public void addTDataJsonValue(String userId) {
         Object obj = null;
+        //Tries to read tdata.json file
         try {
             obj = new JSONParser().parse(new FileReader("tdata.json"));
         } catch (IOException | ParseException e) {
@@ -39,6 +43,7 @@ public class TDataJSONManager {
         }
         JSONObject jsonObject = (JSONObject) obj;
 
+        //Adds or sets to the "t" value of certain user
         long userTs = readJsonFile(userId);
         if (!(userTs == 0)) {
             jsonObject.put(userId, userTs + 1);
@@ -50,6 +55,7 @@ public class TDataJSONManager {
 
     //Writes set values to JSON File
     public void writeJsonFile(JSONObject jsonObject) {
+        //Tries to read tdata.json file
         try (FileWriter file = new FileWriter("tdata.json")) {
 
             file.write(jsonObject.toJSONString());
@@ -63,6 +69,7 @@ public class TDataJSONManager {
     //Gets tdata.json as a JSONObject
     public JSONObject getTDataJsonObject() {
         Object obj = null;
+        //Tries to read tdata.json file
         try {
             obj = new JSONParser().parse(new FileReader("tdata.json"));
         } catch (IOException | ParseException e) {
@@ -76,6 +83,7 @@ public class TDataJSONManager {
     //Reads tdata.json
     public Long readJsonFile(String userId) {
         Object obj = null;
+        //Tries to read tdata.json file
         try {
             obj = new JSONParser().parse(new FileReader("tdata.json"));
         } catch (IOException | ParseException e) {
@@ -83,6 +91,7 @@ public class TDataJSONManager {
         }
         JSONObject jsonObject = (JSONObject) obj;
 
+        //Gets the "t" value of a certain user
         if (jsonObject.containsKey(userId)) {
             return (Long) jsonObject.get(userId);
         } else {
@@ -91,11 +100,9 @@ public class TDataJSONManager {
 
     }
 
-    //Create tdata.json
+    //Creates the empty format inside tdata.json
     private static void createJsonFileTData() {
-
-        //JSONObject tdata = new JSONObject();
-
+        //Tries to read tdata.json file
         try (FileWriter file = new FileWriter("tdata.json")) {
 
             PrintWriter printWriter = new PrintWriter(file);

@@ -5,25 +5,28 @@ import com.blob.discord.commands.*;
 import com.blob.discord.utilities.BlameSebJSONManager;
 import com.blob.discord.utilities.RoleUtils;
 import net.dv8tion.jda.api.entities.ChannelType;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class CmdMessageListener extends ListenerAdapter {
 
+    public final String NoPermissionMessage = "You do not have permission to do this!";
     private static List<String> blobotCmds = new ArrayList<String>();
     private HashMap<User, Long> cooldown = new HashMap<>();
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (event.isFromType(ChannelType.TEXT) && !event.getAuthor().getId().equals("741780707109765150")) {
+        if (!event.getAuthor().isBot()
+                && event.isFromType(ChannelType.TEXT)
+                && !event.getAuthor().getId().equals("741780707109765150")) {
             if (new BlameSebJSONManager().readJsonFile()[3] == (Boolean) true) {
-                /*if (new BlameSebJSONManager().readJsonFile()[2] == (Boolean) true && !event.getChannel().getId().equals("785623302503661578")) {
+                if (new BlameSebJSONManager().readJsonFile()[2] == (Boolean) true && !event.getChannel().getId().equals("785623302503661578")) {
                     return;
-                } else {*/
+                } else {
                 String message = event.getMessage().getContentRaw().toLowerCase();
                 String[] messageSplit = message.split(" ");
                 if (blobotCmds.contains(message)) {
@@ -49,20 +52,26 @@ public class CmdMessageListener extends ListenerAdapter {
                             //Fun Commands
                             case "quickmaths":
                             case "quick maths":
-                                if (new RoleUtils().hasRole(event.getAuthor().getIdLong(), "Owner")) {
+                                if (new RoleUtils().hasRole(event.getMember(), "Owner", event.getGuild())) {
                                     new FunCmds().quickMaths(event.getChannel(), event.getMessage(), event.getAuthor());
                                 } else {
-                                    event.getMessage().reply("You do not have permission to do this!").queue();
+                                    event.getMessage().reply(NoPermissionMessage).queue(message1 -> {
+                                        event.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
+                                        message1.delete().queueAfter(3, TimeUnit.SECONDS);
+                                    });
                                 }
                                 break;
                             case "quickmaths end":
                             case "quick maths end":
                             case "quickmaths stop":
                             case "quick maths stop":
-                                if (new RoleUtils().hasRole(event.getAuthor().getIdLong(), "Owner")) {
-                                    new FunCmds().endQuickMaths(event.getMessage(), event.getChannel(), event.getAuthor());
+                                if (new RoleUtils().hasRole(event.getMember(), "Owner", event.getGuild())) {
+                                    new FunCmds().endQuickMaths(event.getMessage(), event.getChannel(), event.getMember());
                                 } else {
-                                    event.getMessage().reply("You do not have permission to do this!").queue();
+                                    event.getMessage().reply(NoPermissionMessage).queue(message1 -> {
+                                        event.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
+                                        message1.delete().queueAfter(3, TimeUnit.SECONDS);
+                                    });
                                 }
                                 break;
                             case "cat":
@@ -85,25 +94,49 @@ public class CmdMessageListener extends ListenerAdapter {
                             case "help":
                                 new HelpCmd().blobotHelp(event.getChannel());
                                 break;
-                            case "blobot enable":
-                                if (new RoleUtils().hasRole(event.getAuthor().getIdLong(), "Owner")) {
-                                    new UtilityCmds().blobotToggle(event.getChannel(), event.getAuthor(), event.getMember(), true, event.getGuild());
+                            case "staff help":
+                            case "staffhelp":
+                                new HelpCmd().staffHelp(event.getChannel());
+                                break;
+                            case "vcreset":
+                            case "vc reset":
+                                if (new RoleUtils().hasRole(event.getMember(), "Owner", event.getGuild())) {
+                                    new UtilityCmds().resetAutoVc(event.getGuild(), event.getMessage());
                                 } else {
-                                    event.getMessage().reply("You do not have permission to do this!").queue();
+                                    event.getMessage().reply(NoPermissionMessage).queue(message1 -> {
+                                        event.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
+                                        message1.delete().queueAfter(3, TimeUnit.SECONDS);
+                                    });
+                                }
+                                break;
+                            case "blobot enable":
+                                if (new RoleUtils().hasRole(event.getMember(), "Owner", event.getGuild())) {
+                                    new UtilityCmds().blobotToggle(event.getChannel(), true);
+                                } else {
+                                    event.getMessage().reply(NoPermissionMessage).queue(message1 -> {
+                                        event.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
+                                        message1.delete().queueAfter(3, TimeUnit.SECONDS);
+                                    });
                                 }
                                 break;
                             case "blobot disable":
-                                if (new RoleUtils().hasRole(event.getAuthor().getIdLong(), "Owner")) {
-                                    new UtilityCmds().blobotToggle(event.getChannel(), event.getAuthor(), event.getMember(), false, event.getGuild());
+                                if (new RoleUtils().hasRole(event.getMember(), "Owner", event.getGuild())) {
+                                    new UtilityCmds().blobotToggle(event.getChannel(), false);
                                 } else {
-                                    event.getMessage().reply("You do not have permission to do this!").queue();
+                                    event.getMessage().reply(NoPermissionMessage).queue(message1 -> {
+                                        event.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
+                                        message1.delete().queueAfter(3, TimeUnit.SECONDS);
+                                    });
                                 }
                                 break;
                             case "blobot restricted":
-                                if (new RoleUtils().hasRole(event.getAuthor().getIdLong(), "Owner")) {
-                                    new UtilityCmds().blobotRestricted(event.getChannel(), event.getMember());
+                                if (new RoleUtils().hasRole(event.getMember(), "Owner", event.getGuild())) {
+                                    new UtilityCmds().blobotRestricted(event.getChannel());
                                 } else {
-                                    event.getMessage().reply("You do not have permission to do this!").queue();
+                                    event.getMessage().reply(NoPermissionMessage).queue(message1 -> {
+                                        event.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
+                                        message1.delete().queueAfter(3, TimeUnit.SECONDS);
+                                    });
                                 }
                                 break;
                             //Other Commands
@@ -121,24 +154,33 @@ public class CmdMessageListener extends ListenerAdapter {
                             }
                         }, 2000);
                     } else {
-                        event.getChannel().sendMessage(event.getAuthor().getAsMention() + ", a little too quick there boomer! Please wait 2 seconds").queue();
+                        event.getChannel().sendMessage(event.getAuthor().getAsMention() + ", a little too quick there! Please wait 2 seconds").queue();
                     }
-                    //}
                 } else {
+                    //Private VC Commands
                     if (messageSplit.length == 1 && messageSplit[0].equals("vccreate")) {
-                        new VoiceCmds().createPrivateVoice(event.getGuild(), event.getMember());
+                        new VoiceCmds().createPrivateVoice(event.getGuild(), event.getMessage(), event.getMember());
                     } else if (messageSplit.length == 2 && messageSplit[0].equals("vcinvite")) {
-                        if (event.getGuild().getMemberByTag(messageSplit[1].substring(1)) != null) {
-                            new VoiceCmds().inviteUserToPrivateVoice(event.getGuild(), event.getMessage(), event.getMember(), event.getGuild().getMemberByTag(messageSplit[1].substring(1)));
-                        } else {
-                            event.getMessage().reply("The provided user is invalid! Cmd format: vcinvite " + event.getGuild().getSelfMember().getAsMention());
+                        String userId = messageSplit[1].substring(3, messageSplit[1].length() - 1);
+                        try {
+                            event.getGuild().retrieveMemberById(userId).queue(member -> {
+                                if (event.getGuild().getMemberById(userId) != null) {
+                                    System.out.println("1");
+                                    new VoiceCmds().inviteUserToPrivateVoice(event.getGuild(), event.getMessage(), event.getMember(), event.getGuild().getMemberById(userId));
+                                } else {
+                                    event.getMessage().reply("The provided user is invalid! Cmd format: vcinvite " + event.getGuild().getSelfMember().getAsMention()).queue();
+                                }
+                            });
+                        } catch (IllegalArgumentException exception) {
+                            event.getMessage().reply("The provided user is invalid! Cmd format: vcinvite " + event.getGuild().getSelfMember().getAsMention()).queue();
                         }
                     }
                 }
+            }
             } else {
                 if (event.getMessage().getContentRaw().equals("blobot enable")) {
                     Core.getLogger().info(event.getAuthor().getName() + " issued command: " + event.getMessage().getContentRaw());
-                    new UtilityCmds().blobotToggle(event.getChannel(), event.getAuthor(), event.getMember(), true, event.getGuild());
+                    new UtilityCmds().blobotToggle(event.getChannel(), true);
                 }
             }
         } else if (event.isFromType(ChannelType.PRIVATE) && !event.getAuthor().getId().equals("741780707109765150")) {
@@ -162,17 +204,21 @@ public class CmdMessageListener extends ListenerAdapter {
         blobotCmds.add("ping me");
         blobotCmds.add("blobot help");
         blobotCmds.add("help");
+        blobotCmds.add("staff help");
+        blobotCmds.add("staffhelp");
         blobotCmds.add("blobot enable");
         blobotCmds.add("blobot disable");
         blobotCmds.add("blobot restricted");
         blobotCmds.add("t leaderboard");
-        blobotCmds.add("test");
         blobotCmds.add("quick maths");
         blobotCmds.add("quickmaths");
         blobotCmds.add("quickmaths end");
         blobotCmds.add("quick maths end");
         blobotCmds.add("quickmaths stop");
         blobotCmds.add("quick maths stop");
+        blobotCmds.add("vcreset");
+        blobotCmds.add("vc reset");
+        //blobotCmds.add("test");
     }
 
 }

@@ -1,24 +1,22 @@
 package com.blob.discord.commands;
 
-import com.blob.discord.Core;
 import com.blob.discord.utilities.TDataJSONManager;
 import com.blob.discord.utilities.TUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
 
 import java.awt.*;
-import java.util.*;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Map;
 
 public class OtherCmds {
 
     //T Leaderboard Command
     public void tLeaderboard(MessageChannel channel, User user, Guild guild) {
         List<Map.Entry<String, Long>> sortedList = new TUtils().tSorter();
+        //Creates new message Embed
         EmbedBuilder eb = new EmbedBuilder()
                 .setColor(new Color(248, 139, 78))
                 .setTitle("**:regional_indicator_t:   #t Leaderboard   :regional_indicator_t:**")

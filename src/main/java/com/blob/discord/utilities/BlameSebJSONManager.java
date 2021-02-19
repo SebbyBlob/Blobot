@@ -1,5 +1,6 @@
 package com.blob.discord.utilities;
 
+import com.blob.discord.Core;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -12,15 +13,16 @@ public class BlameSebJSONManager {
     //on Startup
     public void initiateJson() {
         JSONParser jsonParser = new JSONParser();
-
+        //Tries to read blameseb.json
         try (FileReader reader = new FileReader("blameseb.json")) {
 
             Object obj = jsonParser.parse(reader);
 
             JSONObject blameseb = (JSONObject) obj;
-            System.out.println(blameseb);
+            Core.getLogger().info("blameseb.json values: " + blameseb);
 
         } catch (FileNotFoundException e) {
+            //Creates a blameseb.json file if no file exists
             createJsonFileBlameSeb();
             System.out.printf("Creating JSON file...");
         } catch (IOException | ParseException e) {
@@ -33,6 +35,7 @@ public class BlameSebJSONManager {
     //Set Json File Values
     public Object setJsonValue(Integer integer, @Nullable Object object) {
         Object obj = null;
+        //Tries to read blameseb.json
         try {
             obj = new JSONParser().parse(new FileReader("blameseb.json"));
         } catch (IOException | ParseException e) {
@@ -72,6 +75,7 @@ public class BlameSebJSONManager {
 
     //Writes set values to JSON File
     public void writeJsonFile(JSONObject jsonObject) {
+        //Tries to read blameseb.json
         try (FileWriter file = new FileWriter("blameseb.json")) {
 
             file.write(jsonObject.toJSONString());
@@ -85,6 +89,7 @@ public class BlameSebJSONManager {
     //Reads blameseb.json
     public Object[] readJsonFile() {
         Object obj = null;
+        //Tries to read blameseb.json
         try {
             obj = new JSONParser().parse(new FileReader("blameseb.json"));
         } catch (IOException | ParseException e) {
@@ -106,20 +111,13 @@ public class BlameSebJSONManager {
     private static void createJsonFileBlameSeb() {
 
         JSONObject blameseb = new JSONObject();
-        //restricted; true = commands only allowed in bot commands, false = commands allowed in any channel
-        blameseb.put("restricted", true);
+        blameseb.put("restricted", false);
         blameseb.put("toggled", true);
         blameseb.put("blameseb", 0);
         blameseb.put("forgiveseb", 0);
         blameseb.put("lastSentT", null);
 
-        /*try {
-            Files.write(Paths.get("blameseb.json"), blameseb.toJSONString().getBytes());
-            System.out.printf("Created JSON file.");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-
+        //Tries to read blameseb.json
         try (FileWriter file = new FileWriter("blameseb.json")) {
 
             file.write(blameseb.toJSONString());
@@ -128,7 +126,6 @@ public class BlameSebJSONManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
 }
