@@ -1,6 +1,6 @@
 # Blobot
 
-Custom coded Discord bot made with Discord JDA, for TGU (private discord server).
+Custom coded Discord Bot made for private discord server, primary feature is automatically scaling voice channels which means there will always be an empty voice channel available for each type (General, Gaming, & Yeetus Voice) for up to 4 channels per type. Also includes random animal image commands which grab images from google imagees using selenium & jsoup.
 
 ## Features
 
