@@ -25,7 +25,7 @@ public class Core {
     private static JDA jda;
     private static Logger logger = LoggerFactory.getLogger("Blobot");
 
-    public static void main(String[] args) throws LoginException, InterruptedException {
+    public static void main(String[] args) {
 
         //Checks if there is a bot token provided
         if (args.length != 1) {
@@ -33,25 +33,31 @@ public class Core {
             System.exit(1);
         }
 
-        JDABuilder builder = JDABuilder.createDefault(args[0]);
+        try {
+            //Attempts to build JDA
+            jda = JDABuilder.createDefault(args[0])
+                    .setMemberCachePolicy(MemberCachePolicy.ALL)
+                    .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                    .disableCache(CacheFlag.ACTIVITY, CacheFlag.EMOTE, CacheFlag.CLIENT_STATUS)
+                    .setStatus(OnlineStatus.ONLINE)
+                    .setActivity(Activity.watching("TGU"))
+                    .build()
+                    .awaitReady();
+        } catch (LoginException | InterruptedException exception) {
+            logger.error("Failed to connect to discord (Invalid token?)! Shutting down...");
+            System.exit(1);
+        }
 
-        builder.setMemberCachePolicy(MemberCachePolicy.ALL);
-        builder.enableIntents(GatewayIntent.GUILD_MEMBERS);
-        builder.disableCache(CacheFlag.ACTIVITY, CacheFlag.EMOTE, CacheFlag.CLIENT_STATUS);
-        builder.setStatus(OnlineStatus.ONLINE);
-        builder.setActivity(Activity.watching("TGU"));
+        //Adds event listeners
+        jda.addEventListener(new CmdMessageListener(),
+                new MessageListener(),
+                new VoiceJoinListener(),
+                new VoiceLeaveListener(),
+                new VoiceMoveListener(),
+                new GuildUserLeaveListener(),
+                new GuildUserJoinListener());
 
-        jda = builder.build();
-        jda.awaitReady();
-
-        jda.addEventListener(new CmdMessageListener());
-        jda.addEventListener(new MessageListener());
-        jda.addEventListener(new VoiceJoinListener());
-        jda.addEventListener(new VoiceLeaveListener());
-        jda.addEventListener(new VoiceMoveListener());
-        jda.addEventListener(new GuildUserLeaveListener());
-        jda.addEventListener(new GuildUserJoinListener());
-
+        //Initiation
         new CmdMessageListener().onStartup();
         new BlameSebJSONManager().initiateJson();
         new TDataJSONManager().initiateJson();

@@ -1,7 +1,6 @@
 package com.blob.discord.commands;
 
 import com.blob.discord.listeners.MessageListener;
-import com.blob.discord.utilities.CatGenerator;
 import com.blob.discord.utilities.ImageGenerator;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
@@ -91,7 +90,7 @@ public class FunCmds {
         EmbedBuilder eb = new EmbedBuilder()
                 .setColor(new Color(251, 118, 31))
                 .setTitle("**Cat :D**")
-                .setImage(new CatGenerator().getCat())
+                .setImage(new ImageGenerator().getCat())
                 .setFooter("Developed by Sebby", "https://i.imgur.com/PpzENVl.png");
         channel.sendMessage(eb.build()).queue();
     }

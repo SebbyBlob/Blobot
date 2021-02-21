@@ -40,6 +40,7 @@ public class TDataJSONManager {
             obj = new JSONParser().parse(new FileReader("tdata.json"));
         } catch (IOException | ParseException e) {
             e.printStackTrace();
+            return;
         }
         JSONObject jsonObject = (JSONObject) obj;
 

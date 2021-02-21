@@ -22,7 +22,10 @@ public class TUtils {
     //Reads the first 100 t's in #t
     public void readAllT() {
         Core.getJDA().getTextChannelById(770731649569783829L).getHistoryFromBeginning(100).queue(messageHistory -> {
-            if (!messageHistory.isEmpty()) {
+            for (Message msg : messageHistory.getRetrievedHistory()) {
+
+                if ()
+            }
                 Message msg;
                 //Runs through the loop 100 times
                 for (int i = 0; i < 100; i++) {
@@ -43,7 +46,7 @@ public class TUtils {
                         readTAfterMsg(messageHistory.getRetrievedHistory().get(0));
                     }
                 }
-            }
+
         });
     }
 
