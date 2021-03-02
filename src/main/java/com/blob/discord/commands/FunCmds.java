@@ -1,18 +1,42 @@
 package com.blob.discord.commands;
 
 import com.blob.discord.listeners.MessageListener;
+import com.blob.discord.managers.Command;
 import com.blob.discord.utilities.ImageGenerator;
+import com.blob.discord.utilities.RoleUtils;
+import com.blob.discord.utilities.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-public class FunCmds {
+public class FunCmds extends Command {
+
+    @Override
+    protected void Command(@NotNull MessageReceivedEvent event, String label) {
+        if (event.getMessage().getContentRaw().toLowerCase().matches("quickmaths|quick maths")) {
+            quickMaths(event);
+        } else if (event.getMessage().getContentRaw().toLowerCase().matches("quickmaths end|quick maths end|quickmaths stop|quick maths stop")) {
+            endQuickMaths(event);
+        } else if (event.getMessage().getContentRaw().equalsIgnoreCase("cat")) {
+            cat(event);
+        } else if (event.getMessage().getContentRaw().equalsIgnoreCase("dog")) {
+            dog(event);
+        } else if (event.getMessage().getContentRaw().equalsIgnoreCase("hedgehog")) {
+            hedgehog(event);
+        } else if (event.getMessage().getContentRaw().equalsIgnoreCase("groundhog")) {
+            groundhog(event);
+        } else if (event.getMessage().getContentRaw().equalsIgnoreCase("ping me")) {
+            pingMe(event);
+        }
+    }
 
     private static boolean quickMathsInProgress = false;
     private static String answer = "";
@@ -21,14 +45,21 @@ public class FunCmds {
     private static long creationTime;
 
     //Starts the quick maths mini event
-    public void quickMaths(MessageChannel channel, Message message, User user) {
+    public void quickMaths(MessageReceivedEvent event) {
+        if (!new RoleUtils().hasRole(event.getMember(), "Owner", event.getGuild())) {
+            event.getMessage().reply(Settings.NoPermissionMessage).queue(message1 -> {
+                event.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
+                message1.delete().queueAfter(3, TimeUnit.SECONDS);
+            });
+            return;
+        }
         if (quickMathsInProgress == true) {
-            message.delete().queue();
-            channel.sendMessage(user.getAsMention() + " You cannot start Quick Maths while it is already in progress!").queue(message1 -> {
+            event.getMessage().delete().queue();
+            event.getChannel().sendMessage(event.getAuthor().getAsMention() + " You cannot start Quick Maths while it is already in progress!").queue(message1 -> {
                 message1.delete().queueAfter(3, TimeUnit.SECONDS);
             });;
         } else {
-            message.delete().queue();
+            event.getMessage().delete().queue();
 
             Random random = new Random();
 
@@ -56,78 +87,85 @@ public class FunCmds {
             }
             answer = String.valueOf(answerInt);
             quickMathsInProgress = true;
-            channelStarted = channel;
+            channelStarted = event.getChannel();
             creationTime = System.currentTimeMillis();
 
-            channel.sendMessage("**QUICK MATHS:** First 3 people to answer are cool!" +
+            event.getChannel().sendMessage("**QUICK MATHS:** First 3 people to answer are cool!" +
                     "\n**QUICK MATHS:** Solve: **" + equation + "**").queue();
         }
     }
 
     //Stops quickmaths if it is currently in progress
-    public void endQuickMaths(Message message, MessageChannel channel, Member member) {
-        message.delete().queue();
+    public void endQuickMaths(MessageReceivedEvent event) {
+        if (!new RoleUtils().hasRole(event.getMember(), "Owner", event.getGuild())) {
+            event.getMessage().reply(Settings.NoPermissionMessage).queue(message1 -> {
+                event.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
+                message1.delete().queueAfter(3, TimeUnit.SECONDS);
+            });
+            return;
+        }
+        event.getMessage().delete().queue();
         if (quickMathsInProgress == true) {
-            if (channel.equals(channelStarted)) {
+            if (event.getChannel().equals(channelStarted)) {
                 quickMathsInProgress = false;
                 new MessageListener().setUsersAnswered(1);
                 new MessageListener().getUsersCompleted().clear();
-                channel.sendMessage("**QUICK MATHS OVER:** " + member.getEffectiveName() + " has force ended this Quick Maths game").queue();
+                event.getChannel().sendMessage("**QUICK MATHS OVER:** " + event.getMember().getEffectiveName() + " has force ended this Quick Maths game").queue();
             } else {
-                channel.sendMessage(member.getAsMention() + " There is currently no ongoing Quick Maths game in this channel!").queue(message1 -> {
+                event.getChannel().sendMessage(event.getMember().getAsMention() + " There is currently no ongoing Quick Maths game in this channel!").queue(message1 -> {
                     message1.delete().queueAfter(3, TimeUnit.SECONDS);
                 });
             }
         } else {
-            channel.sendMessage(member.getAsMention() + " There is currently no ongoing Quick Maths game!").queue(message1 -> {
+            event.getChannel().sendMessage(event.getMember().getAsMention() + " There is currently no ongoing Quick Maths game!").queue(message1 -> {
                 message1.delete().queueAfter(3, TimeUnit.SECONDS);
             });
         }
     }
 
     //Gives you a random Cat image
-    public void cat(MessageChannel channel) {
+    public void cat(MessageReceivedEvent event) {
         EmbedBuilder eb = new EmbedBuilder()
                 .setColor(new Color(251, 118, 31))
                 .setTitle("**Cat :D**")
                 .setImage(new ImageGenerator().getCat())
                 .setFooter("Developed by Sebby", "https://i.imgur.com/PpzENVl.png");
-        channel.sendMessage(eb.build()).queue();
+        event.getChannel().sendMessage(eb.build()).queue();
     }
 
     //Gives you a random Dog image
-    public void dog(MessageChannel channel) {
+    public void dog(MessageReceivedEvent event) {
         EmbedBuilder eb = new EmbedBuilder()
                 .setColor(new Color(251, 118, 31))
                 .setTitle("**Dog :dog:**")
                 .setImage(new ImageGenerator().getDog())
                 .setFooter("Developed by Sebby", "https://i.imgur.com/PpzENVl.png");
-        channel.sendMessage(eb.build()).queue();
+        event.getChannel().sendMessage(eb.build()).queue();
     }
 
     //Gives a random hedgehog image
-    public void hedgehog(MessageChannel channel) {
+    public void hedgehog(MessageReceivedEvent event) {
         EmbedBuilder eb = new EmbedBuilder()
                 .setColor(new Color(251, 118, 31))
                 .setTitle("**Hedgehog :hedgehog:**")
                 .setImage(new ImageGenerator().getHedgehog())
                 .setFooter("Developed by Sebby", "https://i.imgur.com/PpzENVl.png");
-        channel.sendMessage(eb.build()).queue();
+        event.getChannel().sendMessage(eb.build()).queue();
     }
 
     //Gives a random groundhog image
-    public void groundhog(MessageChannel channel) {
+    public void groundhog(MessageReceivedEvent event) {
         EmbedBuilder eb = new EmbedBuilder()
                 .setColor(new Color(251, 118, 31))
                 .setTitle("**Groundhog**")
                 .setImage(new ImageGenerator().getGroundhog())
                 .setFooter("Developed by Sebby", "https://i.imgur.com/PpzENVl.png");
-        channel.sendMessage(eb.build()).queue();
+        event.getChannel().sendMessage(eb.build()).queue();
     }
 
     //Ping yourself command
-    public void pingMe(MessageChannel channel, User author) {
-        channel.sendMessage(author.getAsMention() + " ping pong!").queue();
+    public void pingMe(MessageReceivedEvent event) {
+        event.getChannel().sendMessage(event.getAuthor().getAsMention() + " ping pong!").queue();
     }
 
     public static boolean isQuickMathsInProgress() { return quickMathsInProgress; }

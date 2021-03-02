@@ -1,17 +1,29 @@
 package com.blob.discord.commands;
 
+import com.blob.discord.managers.Command;
 import com.blob.discord.utilities.RoleUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
-public class HelpCmd {
+public class HelpCmd extends Command {
+
+    @Override
+    protected void Command(@NotNull MessageReceivedEvent event, String label) {
+        if (event.getMessage().getContentRaw().toLowerCase().matches("blobot help|help")) {
+            blobotHelp(event);
+        } else if (event.getMessage().getContentRaw().toLowerCase().matches("staff help|staffhelp")) {
+            staffHelp(event);
+        }
+    }
 
     //Help Command
-    public void blobotHelp(MessageChannel channel) {
+    public void blobotHelp(MessageReceivedEvent event) {
         //Creates new message Embed
         EmbedBuilder eb = new EmbedBuilder()
                 .setColor(new Color(64, 158, 230))
@@ -34,10 +46,10 @@ public class HelpCmd {
                         "\n\n__Other Commands__:" +
                         "\n`t leaderboard` **-** Shows a top 5 leaderboard of who has the most t's in #t")
                 .setFooter("Developed by Sebby", "https://i.imgur.com/PpzENVl.png");
-        channel.sendMessage(eb.build()).queue();
+        event.getChannel().sendMessage(eb.build()).queue();
     }
 
-    public void staffHelp(MessageChannel channel) {
+    public void staffHelp(MessageReceivedEvent event) {
         //Creates new message Embed
         EmbedBuilder eb = new EmbedBuilder()
                 .setColor(new Color(64, 158, 230))
@@ -53,7 +65,7 @@ public class HelpCmd {
                         "\n`quickmaths` **-** Starts a Quickmaths game" +
                         "\n`quickmaths end` **-** Stops any current Quickmaths game")
                 .setFooter("Developed by Sebby", "https://i.imgur.com/PpzENVl.png");
-        channel.sendMessage(eb.build()).queue();
+        event.getChannel().sendMessage(eb.build()).queue();
     }
 
 }

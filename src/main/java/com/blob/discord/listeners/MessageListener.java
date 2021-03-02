@@ -2,8 +2,8 @@ package com.blob.discord.listeners;
 
 import com.blob.discord.Core;
 import com.blob.discord.commands.FunCmds;
-import com.blob.discord.utilities.BlameSebJSONManager;
-import com.blob.discord.utilities.TDataJSONManager;
+import com.blob.discord.managers.BlameSebJSONManager;
+import com.blob.discord.managers.TDataJSONManager;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

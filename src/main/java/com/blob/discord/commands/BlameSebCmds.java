@@ -1,19 +1,33 @@
 package com.blob.discord.commands;
 
-import com.blob.discord.utilities.BlameSebJSONManager;
+import com.blob.discord.managers.BlameSebJSONManager;
+import com.blob.discord.managers.Command;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 
-public class BlameSebCmds {
+public class BlameSebCmds extends Command {
+
+    @Override
+    protected void Command(@NotNull MessageReceivedEvent event, String label) {
+        if (event.getMessage().getContentRaw().equalsIgnoreCase("blame seb")) {
+            blameSeb(event);
+        } else if (event.getMessage().getContentRaw().equalsIgnoreCase("forgive seb")) {
+            forgiveSeb(event);
+        } else if (event.getMessage().getContentRaw().toLowerCase().matches("is it sebs fault|is it sebs fault\\?|is it seb's fault|is it seb's fault\\?|iisf|iisf\\?")) {
+            isItSebsFault(event);
+        }
+    }
 
     //Blame Seb
-    public void blameSeb(MessageChannel channel, String name) {
+    public void blameSeb(MessageReceivedEvent event) {
         //Creates new message Embed
         EmbedBuilder eb = new EmbedBuilder()
                 .setColor(new Color(249, 127, 57))
-                .setTitle("**" + name + " has blamed Seb for the " + new BlameSebJSONManager().setJsonValue(0, null) + " time!**");
+                .setTitle("**" + event.getMember().getEffectiveName() + " has blamed Seb for the " + new BlameSebJSONManager().setJsonValue(0, null) + " time!**");
 
         //Checks if it is Seb's fault
         String sebsFault = null;
@@ -31,15 +45,15 @@ public class BlameSebCmds {
                 .addField("Seb blames:", new BlameSebJSONManager().readJsonFile()[0].toString(), true)
                 .addField("Seb forgives:", new BlameSebJSONManager().readJsonFile()[1].toString(), true)
                 .setFooter("Developed by Sebby", "https://i.imgur.com/PpzENVl.png");
-        channel.sendMessage(eb.build()).queue();
+        event.getChannel().sendMessage(eb.build()).queue();
     }
 
     //Forgive Seb
-    public void forgiveSeb(MessageChannel channel, String name) {
+    public void forgiveSeb(MessageReceivedEvent event) {
         //Creates new message Embed
         EmbedBuilder eb = new EmbedBuilder()
                 .setColor(new Color(249, 127, 57))
-                .setTitle("**" + name + " has forgiven Seb for the " + new BlameSebJSONManager().setJsonValue(1, null) + " time!**");
+                .setTitle("**" + event.getMember().getEffectiveName() + " has forgiven Seb for the " + new BlameSebJSONManager().setJsonValue(1, null) + " time!**");
 
         //Checks if it is Seb's fault
         String sebsFault = null;
@@ -57,11 +71,11 @@ public class BlameSebCmds {
                 .addField("Seb blames:", new BlameSebJSONManager().readJsonFile()[0].toString(), true)
                 .addField("Seb forgives:", new BlameSebJSONManager().readJsonFile()[1].toString(), true)
                 .setFooter("Developed by Sebby", "https://i.imgur.com/PpzENVl.png");
-        channel.sendMessage(eb.build()).queue();
+        event.getChannel().sendMessage(eb.build()).queue();
     }
 
     //Is it Seb's fault?
-    public void isItSebsFault(MessageChannel channel) {
+    public void isItSebsFault(MessageReceivedEvent event) {
         //Grabs blame/forgive seb data
         long blameSeb = (long) new BlameSebJSONManager().readJsonFile()[0];
         long forgiveSeb = (long) new BlameSebJSONManager().readJsonFile()[1];
@@ -84,7 +98,7 @@ public class BlameSebCmds {
                     .addField("Seb blames:", new BlameSebJSONManager().readJsonFile()[0].toString(), true)
                     .addField("Seb forgives:", new BlameSebJSONManager().readJsonFile()[1].toString(), true);
         }
-        channel.sendMessage(eb.build()).queue();
+        event.getChannel().sendMessage(eb.build()).queue();
     }
 
 }

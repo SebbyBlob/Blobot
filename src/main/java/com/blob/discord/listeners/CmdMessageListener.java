@@ -2,7 +2,9 @@ package com.blob.discord.listeners;
 
 import com.blob.discord.Core;
 import com.blob.discord.commands.*;
-import com.blob.discord.utilities.BlameSebJSONManager;
+import com.blob.discord.managers.BlameSebJSONManager;
+import com.blob.discord.managers.Command;
+import com.blob.discord.managers.CommandManager;
 import com.blob.discord.utilities.RoleUtils;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.User;
@@ -14,7 +16,6 @@ import java.util.concurrent.TimeUnit;
 
 public class CmdMessageListener extends ListenerAdapter {
 
-    public final String NoPermissionMessage = "You do not have permission to do this!";
     private static List<String> blobotCmds = new ArrayList<String>();
     private HashMap<User, Long> cooldown = new HashMap<>();
 
@@ -33,7 +34,11 @@ public class CmdMessageListener extends ListenerAdapter {
                     if (!cooldown.containsKey(event.getAuthor())) {
                         //Logging
                         Core.getLogger().info(event.getAuthor().getName() + " issued command: " + event.getMessage().getContentRaw());
-                        switch (message) {
+
+
+
+
+                        /*switch (message) {
                             //Blame Seb Commands
                             case "blame seb":
                                 new BlameSebCmds().blameSeb(event.getChannel(), event.getAuthor().getName());
@@ -143,7 +148,7 @@ public class CmdMessageListener extends ListenerAdapter {
                             case "t leaderboard":
                                 new OtherCmds().tLeaderboard(event.getChannel(), event.getAuthor(), event.getGuild());
                                 break;
-                        }
+                        }*/
                         //Cooldown logic
                         cooldown.put(event.getAuthor(), System.currentTimeMillis() + (2 * 1000));
                         Timer timer = new Timer();
@@ -154,19 +159,21 @@ public class CmdMessageListener extends ListenerAdapter {
                             }
                         }, 2000);
                     } else {
-                        event.getChannel().sendMessage(event.getAuthor().getAsMention() + ", a little too quick there! Please wait 2 seconds").queue();
+                        event.getChannel().sendMessage(event.getAuthor().getAsMention() + ", a little too quick there! Please wait 2 seconds").queue(sentMessage -> {
+                            sentMessage.delete().queueAfter(3, TimeUnit.SECONDS);
+                        });
                     }
                 } else {
                     //Private VC Commands
                     if (messageSplit.length == 1 && messageSplit[0].equals("vccreate")) {
-                        new VoiceCmds().createPrivateVoice(event.getGuild(), event.getMessage(), event.getMember());
+                        new VoiceCmds().createPrivateVoice(event);
                     } else if (messageSplit.length == 2 && messageSplit[0].equals("vcinvite")) {
                         String userId = messageSplit[1].substring(3, messageSplit[1].length() - 1);
                         try {
                             event.getGuild().retrieveMemberById(userId).queue(member -> {
                                 if (event.getGuild().getMemberById(userId) != null) {
                                     System.out.println("1");
-                                    new VoiceCmds().inviteUserToPrivateVoice(event.getGuild(), event.getMessage(), event.getMember(), event.getGuild().getMemberById(userId));
+                                    new VoiceCmds().inviteUserToPrivateVoice(event, event.getGuild().getMemberById(userId));
                                 } else {
                                     event.getMessage().reply("The provided user is invalid! Cmd format: vcinvite " + event.getGuild().getSelfMember().getAsMention()).queue();
                                 }
@@ -180,7 +187,7 @@ public class CmdMessageListener extends ListenerAdapter {
             } else {
                 if (event.getMessage().getContentRaw().equals("blobot enable")) {
                     Core.getLogger().info(event.getAuthor().getName() + " issued command: " + event.getMessage().getContentRaw());
-                    new UtilityCmds().blobotToggle(event.getChannel(), true);
+                    new UtilityCmds().blobotToggle(event, true);
                 }
             }
         } else if (event.isFromType(ChannelType.PRIVATE) && !event.getAuthor().getId().equals("741780707109765150")) {

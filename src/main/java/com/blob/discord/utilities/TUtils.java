@@ -1,6 +1,8 @@
 package com.blob.discord.utilities;
 
 import com.blob.discord.Core;
+import com.blob.discord.managers.BlameSebJSONManager;
+import com.blob.discord.managers.TDataJSONManager;
 import net.dv8tion.jda.api.entities.Message;
 
 import java.util.*;

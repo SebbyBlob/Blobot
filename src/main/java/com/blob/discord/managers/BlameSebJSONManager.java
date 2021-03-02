@@ -1,4 +1,4 @@
-package com.blob.discord.utilities;
+package com.blob.discord.managers;
 
 import com.blob.discord.Core;
 import org.json.simple.JSONObject;

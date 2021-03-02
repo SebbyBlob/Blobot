@@ -1,20 +1,47 @@
 package com.blob.discord.commands;
 
 import com.blob.discord.listeners.VoiceJoinListener;
-import com.blob.discord.utilities.BlameSebJSONManager;
+import com.blob.discord.managers.BlameSebJSONManager;
+import com.blob.discord.managers.Command;
+import com.blob.discord.utilities.RoleUtils;
+import com.blob.discord.utilities.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
-public class UtilityCmds {
+public class UtilityCmds extends Command {
+
+    @Override
+    protected void Command(@NotNull MessageReceivedEvent event, String label) {
+        if (event.getMessage().getContentRaw().equalsIgnoreCase("blobot enable")) {
+            blobotToggle(event, true);
+        } else if (event.getMessage().getContentRaw().equalsIgnoreCase("blobot disable")) {
+            blobotToggle(event, false);
+        } else if (event.getMessage().getContentRaw().equalsIgnoreCase("blobot restricted")) {
+            blobotRestricted(event);
+        } else if (event.getMessage().getContentRaw().toLowerCase().matches("vcreset|vc reset")) {
+            resetAutoVc(event);
+        }
+    }
 
     //Toggle Blobot on/off
-    public void blobotToggle(MessageChannel channel, Boolean onOff) {
+    public void blobotToggle(MessageReceivedEvent event, Boolean onOff) {
+        if (!new RoleUtils().hasRole(event.getMember(), "Owner", event.getGuild())) {
+            event.getMessage().reply(Settings.NoPermissionMessage).queue(message1 -> {
+                event.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
+                message1.delete().queueAfter(3, TimeUnit.SECONDS);
+            });
+            return;
+        }
         //Gets the current toggle value
         boolean preToggledValue = (boolean) new BlameSebJSONManager().readJsonFile()[3];
         //Creates new message Embed
@@ -47,11 +74,18 @@ public class UtilityCmds {
                         .addField("Restricted Mode", new BlameSebJSONManager().readJsonFile()[2].toString(), true);
             }
         }
-        channel.sendMessage(eb.build()).queue();
+        event.getMessage().getChannel().sendMessage(eb.build()).queue();
     }
 
     //Toggle Blobot for use in #Bot-commands only
-    public void blobotRestricted(MessageChannel channel) {
+    public void blobotRestricted(MessageReceivedEvent event) {
+        if (!new RoleUtils().hasRole(event.getMember(), "Owner", event.getGuild())) {
+            event.getMessage().reply(Settings.NoPermissionMessage).queue(message1 -> {
+                event.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
+                message1.delete().queueAfter(3, TimeUnit.SECONDS);
+            });
+            return;
+        }
         //Gets current restricted state
         boolean restrictedState = (boolean) new BlameSebJSONManager().readJsonFile()[2];
         //Creates new message Embed
@@ -66,11 +100,18 @@ public class UtilityCmds {
             new BlameSebJSONManager().setJsonValue(2, true);
             eb.setTitle("Blobot commands are now Only allowed in #bot-commands");
         }
-        channel.sendMessage(eb.build()).queue();
+        event.getMessage().getChannel().sendMessage(eb.build()).queue();
     }
 
     //Resets all automatic VCs
-    public void resetAutoVc(Guild guild, Message message) {
+    public void resetAutoVc(MessageReceivedEvent event) {
+        if (!new RoleUtils().hasRole(event.getMember(), "Owner", event.getGuild())) {
+            event.getMessage().reply(Settings.NoPermissionMessage).queue(message1 -> {
+                event.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
+                message1.delete().queueAfter(3, TimeUnit.SECONDS);
+            });
+            return;
+        }
         HashMap<String, ArrayList<Long>> currentAutoVoiceChannels = VoiceJoinListener.getInstance().getCurrentAutoVoiceChannels();
         //Loops through all the lists within currentAutoVoiceChannels
         for (ArrayList<Long> list : currentAutoVoiceChannels.values()) {
@@ -78,12 +119,12 @@ public class UtilityCmds {
             for (Long channelId : list) {
                 //Makes sure the channel is not the original VC of type
                 if (!channelId.equals(list.get(0))) {
-                    guild.getVoiceChannelById(channelId).delete().queue();
+                    event.getGuild().getVoiceChannelById(channelId).delete().queue();
                     list.remove(channelId);
                 }
             }
         }
-        message.reply("Successfully reset all automatic voice channels!").queue();
+        event.getMessage().reply("Successfully reset all automatic voice channels!").queue();
     }
 
 }

@@ -1,9 +1,9 @@
 package com.blob.discord;
 
 import com.blob.discord.listeners.*;
-import com.blob.discord.utilities.BlameSebJSONManager;
+import com.blob.discord.managers.BlameSebJSONManager;
 import com.blob.discord.utilities.HtmlReader;
-import com.blob.discord.utilities.TDataJSONManager;
+import com.blob.discord.managers.TDataJSONManager;
 import com.blob.discord.utilities.TUtils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -18,9 +18,6 @@ import org.slf4j.LoggerFactory;
 import javax.security.auth.login.LoginException;
 
 public class Core {
-
-    public final Long AutoVCGuildId = 530904600119869450L;
-    public final Long AutoVCCategoryId = 809518946079211600L;
 
     private static JDA jda;
     private static Logger logger = LoggerFactory.getLogger("Blobot");
