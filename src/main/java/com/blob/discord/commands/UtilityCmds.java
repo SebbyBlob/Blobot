@@ -20,8 +20,12 @@ import java.util.concurrent.TimeUnit;
 
 public class UtilityCmds extends Command {
 
+    public UtilityCmds() {
+        super("");
+    }
+
     @Override
-    protected void Command(@NotNull MessageReceivedEvent event, String label) {
+    public void onCommand(MessageReceivedEvent event) {
         if (event.getMessage().getContentRaw().equalsIgnoreCase("blobot enable")) {
             blobotToggle(event, true);
         } else if (event.getMessage().getContentRaw().equalsIgnoreCase("blobot disable")) {

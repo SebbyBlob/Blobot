@@ -8,8 +8,12 @@ public abstract class Command {
 
     private String label;
 
-    protected void Command(@NotNull MessageReceivedEvent event, String label) {
+    public Command(String label) {
         this.label = label;
     }
+
+    public abstract void onCommand(MessageReceivedEvent event);
+
+    public String getLabel() { return label; }
 
 }

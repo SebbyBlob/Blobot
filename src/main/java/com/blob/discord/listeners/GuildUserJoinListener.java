@@ -2,6 +2,7 @@ package com.blob.discord.listeners;
 
 import com.blob.discord.Core;
 import com.blob.discord.commands.VoiceCmds;
+import com.blob.discord.utilities.Settings;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -13,7 +14,7 @@ public class GuildUserJoinListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(GuildMemberJoinEvent event) {
-        if (event.getGuild().getIdLong() == new Core().AutoVCGuildId) {
+        if (event.getGuild().getIdLong() == Settings.AutoVCGuildId) {
             ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
             Runnable runnable = new Runnable() {
                 @Override

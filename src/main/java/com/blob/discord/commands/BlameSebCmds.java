@@ -11,8 +11,12 @@ import java.awt.*;
 
 public class BlameSebCmds extends Command {
 
+    public BlameSebCmds() {
+        super("blame seb");
+    }
+
     @Override
-    protected void Command(@NotNull MessageReceivedEvent event, String label) {
+    public void onCommand(MessageReceivedEvent event) {
         if (event.getMessage().getContentRaw().equalsIgnoreCase("blame seb")) {
             blameSeb(event);
         } else if (event.getMessage().getContentRaw().equalsIgnoreCase("forgive seb")) {

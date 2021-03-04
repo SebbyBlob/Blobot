@@ -19,8 +19,12 @@ import java.util.concurrent.TimeUnit;
 
 public class FunCmds extends Command {
 
+    public FunCmds() {
+        super("");
+    }
+
     @Override
-    protected void Command(@NotNull MessageReceivedEvent event, String label) {
+    public void onCommand(MessageReceivedEvent event) {
         if (event.getMessage().getContentRaw().toLowerCase().matches("quickmaths|quick maths")) {
             quickMaths(event);
         } else if (event.getMessage().getContentRaw().toLowerCase().matches("quickmaths end|quick maths end|quickmaths stop|quick maths stop")) {

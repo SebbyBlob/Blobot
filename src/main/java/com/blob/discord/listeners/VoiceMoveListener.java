@@ -2,6 +2,7 @@ package com.blob.discord.listeners;
 
 import com.blob.discord.Core;
 import com.blob.discord.commands.VoiceCmds;
+import com.blob.discord.utilities.Settings;
 import com.blob.discord.utilities.VoiceUtils;
 import net.dv8tion.jda.api.events.guild.voice.GuildVoiceMoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -21,17 +22,17 @@ public class VoiceMoveListener extends ListenerAdapter {
         HashMap<String, ArrayList<Long>> currentAutoVoiceChannels = VoiceJoinListener.getInstance().getCurrentAutoVoiceChannels();
 
         //Guild & Category ID check
-        if (event.getChannelLeft().getGuild().getIdLong() == new Core().AutoVCGuildId) {
+        if (event.getChannelLeft().getGuild().getIdLong() == Settings.AutoVCGuildId) {
 
             //Checks whether left & joined vc are the same auto VC type
             String channelLeftTypeShort = null;
             String channelJoinedTypeShort = null;
             if (event.getChannelLeft().getParent() != null
-                    && event.getChannelLeft().getParent().getIdLong() == new Core().AutoVCCategoryId
+                    && event.getChannelLeft().getParent().getIdLong() == Settings.AutoVCCategoryId
                     && event.getChannelLeft().getName().split(" ").length >= 2 && event.getChannelLeft().getName().split(" ")[1].matches("General|Gaming|Yeetus"))
                 channelLeftTypeShort = event.getChannelLeft().getName().split(" ")[1];
             if (event.getChannelJoined().getParent() != null
-                    && event.getChannelJoined().getParent().getIdLong() == new Core().AutoVCCategoryId
+                    && event.getChannelJoined().getParent().getIdLong() == Settings.AutoVCCategoryId
                     && event.getChannelJoined().getName().split(" ").length >= 2 && event.getChannelJoined().getName().split(" ")[1].matches("General|Gaming|Yeetus"))
                 channelJoinedTypeShort = event.getChannelJoined().getName().split(" ")[1];
 
@@ -40,7 +41,7 @@ public class VoiceMoveListener extends ListenerAdapter {
 
                 //Voice channel leaving
                 if (event.getChannelLeft().getParent() != null
-                        && event.getChannelLeft().getParent().getIdLong() == new Core().AutoVCCategoryId
+                        && event.getChannelLeft().getParent().getIdLong() == Settings.AutoVCCategoryId
                         && event.getChannelLeft().getMembers().size() == 0) {
                     //Checks whether the left voice channel is an automatic voice channel of a certain type
                     if (currentAutoVoiceChannels.get("General").contains(event.getChannelLeft().getIdLong())) {
@@ -69,7 +70,7 @@ public class VoiceMoveListener extends ListenerAdapter {
 
                 //Voice Channel joining
                 if (event.getChannelJoined().getParent() != null
-                        && event.getChannelJoined().getParent().getIdLong() == new Core().AutoVCCategoryId
+                        && event.getChannelJoined().getParent().getIdLong() == Settings.AutoVCCategoryId
                         && event.getChannelJoined().getMembers().size() == 1) {
                     //Checks whether the joined channel is an automatic voice channel of a certain type
                     if (currentAutoVoiceChannels.get("General").contains(event.getChannelJoined().getIdLong())) {

@@ -16,8 +16,12 @@ import java.util.Map;
 
 public class OtherCmds extends Command {
 
+    public OtherCmds() {
+        super("tleaderboard");
+    }
+
     @Override
-    protected void Command(@NotNull MessageReceivedEvent event, String label) {
+    public void onCommand(MessageReceivedEvent event) {
         tLeaderboard(event);
     }
 

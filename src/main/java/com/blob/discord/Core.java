@@ -2,6 +2,7 @@ package com.blob.discord;
 
 import com.blob.discord.listeners.*;
 import com.blob.discord.managers.BlameSebJSONManager;
+import com.blob.discord.managers.CommandManager;
 import com.blob.discord.utilities.HtmlReader;
 import com.blob.discord.managers.TDataJSONManager;
 import com.blob.discord.utilities.TUtils;
@@ -60,7 +61,8 @@ public class Core {
         new TDataJSONManager().initiateJson();
         new TUtils().onStartup();
         VoiceJoinListener.getInstance().onStartup();
-        new HtmlReader().onStartup();
+        CommandManager.getInstance().onStartup();
+        //new HtmlReader().onStartup();
 
     }
 

@@ -2,6 +2,7 @@ package com.blob.discord.listeners;
 
 import com.blob.discord.Core;
 import com.blob.discord.commands.VoiceCmds;
+import com.blob.discord.utilities.Settings;
 import com.blob.discord.utilities.VoiceUtils;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
@@ -25,9 +26,9 @@ public class VoiceJoinListener extends ListenerAdapter {
     public void onGuildVoiceJoin(GuildVoiceJoinEvent event) {
         HashMap<String, ArrayList<Long>> currentAutoVoiceChannels = getInstance().getCurrentAutoVoiceChannels();
         //Guild & Category ID check
-        if (event.getChannelJoined().getGuild().getIdLong() == new Core().AutoVCGuildId
+        if (event.getChannelJoined().getGuild().getIdLong() == Settings.AutoVCGuildId
                 && event.getChannelJoined().getParent() != null
-                && event.getChannelJoined().getParent().getIdLong() == new Core().AutoVCCategoryId) {
+                && event.getChannelJoined().getParent().getIdLong() == Settings.AutoVCCategoryId) {
             //Checks whether the joined voice channel was previously empty
             if (event.getChannelJoined().getMembers().size() == 1) {
                 //Checks whether the joined channel is an automatic voice channel of a certain type
@@ -76,7 +77,7 @@ public class VoiceJoinListener extends ListenerAdapter {
     }
 
     public void onStartup() {
-        Guild guild = Core.getJDA().getGuildById(new Core().AutoVCGuildId);
+        Guild guild = Core.getJDA().getGuildById(Settings.AutoVCGuildId);
         if (guild == null) {
             Core.getLogger().error("Guild is null in VoiceJoinListener.onStartup");
             return;
@@ -96,7 +97,7 @@ public class VoiceJoinListener extends ListenerAdapter {
         int iterationLoop = 0;
         for (List<VoiceChannel> typeChannelList : typeVCs.values()) {
             for (VoiceChannel channel : typeChannelList) {
-                if (channel.getParent() != null && channel.getParent().getIdLong() == new Core().AutoVCCategoryId) {
+                if (channel.getParent() != null && channel.getParent().getIdLong() == Settings.AutoVCCategoryId) {
                     typeOriginalChannels[iterationLoop] ++;
                     originalVCsId[iterationLoop] = channel.getIdLong();
                 }
@@ -122,7 +123,7 @@ public class VoiceJoinListener extends ListenerAdapter {
         autoTypeVoiceChannels.put("Gaming", new ArrayList<Long>());
         autoTypeVoiceChannels.put("Yeetus Voice", new ArrayList<Long>());
 
-        for (VoiceChannel channel : guild.getCategoryById(new Core().AutoVCCategoryId).getVoiceChannels()) {
+        for (VoiceChannel channel : guild.getCategoryById(Settings.AutoVCCategoryId).getVoiceChannels()) {
             String[] splitName = channel.getName().split(" ");
             String type = null;
             //Checks if the channel is an auto VC of type and assigns type

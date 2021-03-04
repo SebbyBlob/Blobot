@@ -13,8 +13,12 @@ import java.awt.*;
 
 public class HelpCmd extends Command {
 
+    public HelpCmd() {
+        super("help");
+    }
+
     @Override
-    protected void Command(@NotNull MessageReceivedEvent event, String label) {
+    public void onCommand(MessageReceivedEvent event) {
         if (event.getMessage().getContentRaw().toLowerCase().matches("blobot help|help")) {
             blobotHelp(event);
         } else if (event.getMessage().getContentRaw().toLowerCase().matches("staff help|staffhelp")) {

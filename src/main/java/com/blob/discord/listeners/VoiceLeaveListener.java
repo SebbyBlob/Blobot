@@ -2,6 +2,7 @@ package com.blob.discord.listeners;
 
 import com.blob.discord.Core;
 import com.blob.discord.commands.VoiceCmds;
+import com.blob.discord.utilities.Settings;
 import com.blob.discord.utilities.VoiceUtils;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.VoiceChannel;
@@ -22,9 +23,9 @@ public class VoiceLeaveListener extends ListenerAdapter {
         HashMap<String, ArrayList<Long>> currentAutoVoiceChannels = VoiceJoinListener.getInstance().getCurrentAutoVoiceChannels();
 
         //Guild & Category ID check
-        if (event.getChannelLeft().getGuild().getIdLong() == new Core().AutoVCGuildId
+        if (event.getChannelLeft().getGuild().getIdLong() == Settings.AutoVCGuildId
                 && event.getChannelLeft().getParent() != null
-                && event.getChannelLeft().getParent().getIdLong() == new Core().AutoVCCategoryId) {
+                && event.getChannelLeft().getParent().getIdLong() == Settings.AutoVCCategoryId) {
             //Checks whether the left voice channel is empty
             if (event.getChannelLeft().getMembers().size() == 0) {
                 //Checks whether the left voice channel is an automatic voice channel of a certain type

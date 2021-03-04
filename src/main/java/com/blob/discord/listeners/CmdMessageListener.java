@@ -35,7 +35,10 @@ public class CmdMessageListener extends ListenerAdapter {
                         //Logging
                         Core.getLogger().info(event.getAuthor().getName() + " issued command: " + event.getMessage().getContentRaw());
 
-
+                        if (CommandManager.getInstance().hasCommandWithLabel(message)) {
+                            System.out.println("yeet");
+                            CommandManager.getInstance().getCommandByLabel(message).onCommand(event);
+                        }
 
 
                         /*switch (message) {
