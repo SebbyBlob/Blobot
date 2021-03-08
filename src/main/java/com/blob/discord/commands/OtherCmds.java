@@ -17,7 +17,7 @@ import java.util.Map;
 public class OtherCmds extends Command {
 
     public OtherCmds() {
-        super("tleaderboard");
+        super("tleaderboard", "t leaderboard");
     }
 
     @Override

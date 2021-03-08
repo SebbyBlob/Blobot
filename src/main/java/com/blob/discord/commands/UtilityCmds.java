@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 public class UtilityCmds extends Command {
 
     public UtilityCmds() {
-        super("");
+        super("blobot enable", "blobot disable", "blobot restricted", "vcreset", "vc reset");
     }
 
     @Override

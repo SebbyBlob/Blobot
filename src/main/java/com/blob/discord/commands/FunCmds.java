@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 public class FunCmds extends Command {
 
     public FunCmds() {
-        super("");
+        super("quickmaths", "quick maths", "quickmaths end", "quick maths end", "quickmaths stop", "quick maths stop", "cat", "dog", "hedgehog", "groundhog", "ping me");
     }
 
     @Override

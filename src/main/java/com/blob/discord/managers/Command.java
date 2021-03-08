@@ -3,17 +3,21 @@ package com.blob.discord.managers;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public abstract class Command {
 
 
-    private String label;
+    private List<String> labels;
 
-    public Command(String label) {
-        this.label = label;
+    public Command(String... labels) {
+        this.labels = Arrays.asList(labels);
     }
 
     public abstract void onCommand(MessageReceivedEvent event);
 
-    public String getLabel() { return label; }
+    public List<String> getLabels() { return labels; }
 
 }

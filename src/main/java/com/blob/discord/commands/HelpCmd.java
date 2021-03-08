@@ -14,7 +14,7 @@ import java.awt.*;
 public class HelpCmd extends Command {
 
     public HelpCmd() {
-        super("help");
+        super("blobot help", "help", "staff help", "staffhelp");
     }
 
     @Override

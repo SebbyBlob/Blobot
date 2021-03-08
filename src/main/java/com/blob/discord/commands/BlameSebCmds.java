@@ -12,7 +12,7 @@ import java.awt.*;
 public class BlameSebCmds extends Command {
 
     public BlameSebCmds() {
-        super("blame seb");
+        super("blame seb", "forgive seb", "is it sebs fault", "is it sebs fault?", "is it seb's fault", "is it seb's fault?", "iisf", "iisf?");
     }
 
     @Override

@@ -1,10 +1,8 @@
 package com.blob.discord.managers;
 
 import com.blob.discord.commands.*;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class CommandManager {
@@ -12,11 +10,11 @@ public class CommandManager {
     private CommandManager() {
     }
     private static final CommandManager instance = new CommandManager();
+    private List<Command> commands = new ArrayList<>();
+
     public static CommandManager getInstance() {
         return instance;
     }
-
-    private List<Command> commands = new ArrayList<>();
 
     public void onStartup() {
         registerCommand(new BlameSebCmds());
@@ -28,16 +26,18 @@ public class CommandManager {
 
     public boolean hasCommandWithLabel(String message) {
         for (Command cmdClass : commands) {
-            if (message.equalsIgnoreCase(cmdClass.getLabel())) {
-                return true;
+            for (String label : cmdClass.getLabels()) {
+                if (message.equalsIgnoreCase(label)) {
+                    return true;
+                }
             }
         }
         return false;
     }
 
-    public Command getCommandByLabel(String label) {
-        for (Command cmdClass : commands) {
-            if (cmdClass.getLabel().equalsIgnoreCase(label)) {
+    public Command getCommandByLabel(String message) {
+        for (Command cmdClass : getInstance().commands) {
+            if (cmdClass.getLabels().contains(message)) {
                 return cmdClass;
             }
         }
@@ -48,6 +48,8 @@ public class CommandManager {
         getInstance().getCommands().add(command);
     }
 
-    public List<Command> getCommands() { return commands; }
+    public List<Command> getCommands() {
+        return commands;
+    }
 
 }
