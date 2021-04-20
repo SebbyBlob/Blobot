@@ -114,4 +114,13 @@ public class TUtils {
         return list;
     }
 
+    //Gets the total number of t's said in #t
+    public Integer getTotalTs() {
+        int totalTCount = 0;
+        for (Object userTs : new TDataJSONManager().getTDataJsonObject().values()) {
+            totalTCount = totalTCount + (Integer) userTs;
+        }
+        return totalTCount;
+    }
+
 }

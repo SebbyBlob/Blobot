@@ -1,7 +1,5 @@
 package com.blob.discord.listeners;
 
-import com.blob.discord.Core;
-import com.blob.discord.commands.VoiceCmds;
 import com.blob.discord.utilities.Settings;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

@@ -1,11 +1,10 @@
 package com.blob.discord.listeners;
 
 import com.blob.discord.Core;
-import com.blob.discord.commands.*;
+import com.blob.discord.commands.UtilityCmds;
+import com.blob.discord.commands.VoiceCmds;
 import com.blob.discord.managers.BlameSebJSONManager;
-import com.blob.discord.managers.Command;
 import com.blob.discord.managers.CommandManager;
-import com.blob.discord.utilities.RoleUtils;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
@@ -40,20 +39,20 @@ public class CmdMessageListener extends ListenerAdapter {
                             CommandManager.getInstance().getCommandByLabel(message).onCommand(event);
                         }
 
-                        //Cooldown logic
-                        cooldown.put(event.getAuthor(), System.currentTimeMillis() + (2 * 1000));
-                        Timer timer = new Timer();
-                        timer.schedule(new TimerTask() {
-                            @Override
-                            public void run() {
-                                cooldown.remove(event.getAuthor());
-                            }
-                        }, 2000);
                     } else {
-                        event.getChannel().sendMessage(event.getAuthor().getAsMention() + ", a little too quick there! Please wait 2 seconds").queue(sentMessage -> {
+                        event.getChannel().sendMessage(event.getAuthor().getAsMention() + ", a little too quick there! Please wait 1.5 seconds").queue(sentMessage -> {
                             sentMessage.delete().queueAfter(3, TimeUnit.SECONDS);
                         });
                     }
+                    //Cooldown logic
+                    cooldown.put(event.getAuthor(), System.currentTimeMillis() + (1500));
+                    Timer timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            cooldown.remove(event.getAuthor());
+                        }
+                    }, 1500);
                 } else {
                     //Private VC Commands
                     if (messageSplit.length == 1 && messageSplit[0].equals("vccreate")) {

@@ -3,7 +3,6 @@ package com.blob.discord;
 import com.blob.discord.listeners.*;
 import com.blob.discord.managers.BlameSebJSONManager;
 import com.blob.discord.managers.CommandManager;
-import com.blob.discord.utilities.HtmlReader;
 import com.blob.discord.managers.TDataJSONManager;
 import com.blob.discord.utilities.TUtils;
 import net.dv8tion.jda.api.JDA;
@@ -24,7 +23,6 @@ public class Core {
     private static Logger logger = LoggerFactory.getLogger("Blobot");
 
     public static void main(String[] args) {
-
         //Checks if there is a bot token provided
         if (args.length != 1) {
             Core.getLogger().error("No bot token provided! Shutting down...");

@@ -4,19 +4,19 @@ import com.blob.discord.Core;
 import com.blob.discord.commands.FunCmds;
 import com.blob.discord.managers.BlameSebJSONManager;
 import com.blob.discord.managers.TDataJSONManager;
+import com.blob.discord.utilities.Settings;
 import net.dv8tion.jda.api.entities.ChannelType;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class MessageListener extends ListenerAdapter {
 
     private final Random Random = new Random();
     private int usersAnswered = 1;
+    private boolean checkForConfirmAlert = false;
     private List<Long> usersCompleted = new ArrayList<Long>();
 
     @Override
@@ -48,7 +48,7 @@ public class MessageListener extends ListenerAdapter {
                         message.delete().queueAfter(3, TimeUnit.SECONDS);
                     });
                 } else {
-                    //Makes sure user didn't send two t's in a row
+                    //Makes sure user don't send two t's in a row
                     event.getTextChannel().getHistory().retrievePast(2)
                             .map(messages -> messages.get(1))
                             .queue(message -> {
@@ -63,6 +63,32 @@ public class MessageListener extends ListenerAdapter {
                                 }
                             });
 
+                }
+            }
+
+            //Announcement #general Ping
+            if (event.getMessage().getChannel().getIdLong() == Settings.AnnouncementId) {
+                event.getGuild().getTextChannelById(Settings.NuclearTestingAreaId)
+                        .sendMessage(event.getGuild().getMemberById(Settings.SebbyUserId).getAsMention() + " send announcement alert to #general? Please confirm by typing `ConfirM` within 12 hours").queue();
+
+                checkForConfirmAlert = true;
+                Timer timer = new Timer();
+                timer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        checkForConfirmAlert = false;
+                    }
+                }, (1000 * 60 * 60 * 12));
+            }
+            //Check if Confirm Announce Alert command
+            if (checkForConfirmAlert == true
+                    && event.getMessage().getChannel().getIdLong() == Settings.NuclearTestingAreaId
+                    && event.getMessage().getAuthor().getIdLong() == Settings.SebbyUserId
+                    && event.getMessage().getContentRaw().equals("ConfirM")) {
+                //todo: cancel timer task
+                event.getMessage().reply("Sending Announcement alert to #general").queue();
+                for (int i=0; i < 5; i++) {
+                    event.getGuild().getTextChannelById(Settings.GeneralChatId).sendMessage(":exclamation::exclamation: :fire: #\uD83D\uDCE2announcements :fire: :exclamation::exclamation:").queue();
                 }
             }
 
