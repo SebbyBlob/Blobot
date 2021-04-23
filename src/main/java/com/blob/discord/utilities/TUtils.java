@@ -13,7 +13,7 @@ public class TUtils {
     public void onStartup() {
         //Makes sure the last t sent is not null
         if (!(new BlameSebJSONManager().readJsonFile()[4] == null)) {
-            Message lastSentT = Core.getJDA().getTextChannelById("770731649569783829").retrieveMessageById((Long) new BlameSebJSONManager().readJsonFile()[4]).complete();
+            Message lastSentT = Core.getJDA().getTextChannelById(Settings.TChannelId).retrieveMessageById((Long) new BlameSebJSONManager().readJsonFile()[4]).complete();
             readTAfterMsg(lastSentT);
         } else {
             //Reads all t's in #t
@@ -23,11 +23,7 @@ public class TUtils {
 
     //Reads the first 100 t's in #t
     public void readAllT() {
-        Core.getJDA().getTextChannelById(770731649569783829L).getHistoryFromBeginning(100).queue(messageHistory -> {
-            /*for (Message msg : messageHistory.getRetrievedHistory()) {
-
-                if ()
-            }*/
+        Core.getJDA().getTextChannelById(Settings.TChannelId).getHistoryFromBeginning(100).queue(messageHistory -> {
                 Message msg;
                 //Runs through the loop 100 times
                 for (int i = 0; i < 100; i++) {
@@ -54,7 +50,7 @@ public class TUtils {
 
     //Reads the first 100 t's after a certain message
     public void readTAfterMsg(Message messageAfter) {
-        Core.getJDA().getTextChannelById("770731649569783829").getHistoryAfter(messageAfter, 100).queue(messageHistory -> {
+        Core.getJDA().getTextChannelById(Settings.TChannelId).getHistoryAfter(messageAfter, 100).queue(messageHistory -> {
             if (!messageHistory.isEmpty()) {
                 Message msg;
                 //Runs through the loop 100 times
@@ -82,7 +78,7 @@ public class TUtils {
 
     //Sets the last sent t in #t into tdata.json file
     private void getLastSentT() {
-        Core.getJDA().getTextChannelById("770731649569783829").getHistory().retrievePast(1)
+        Core.getJDA().getTextChannelById(Settings.TChannelId).getHistory().retrievePast(1)
                 .map(messages -> messages.get(0))
                 .queue(message -> {
                     new BlameSebJSONManager().setJsonValue(4, message.getIdLong());
@@ -115,10 +111,10 @@ public class TUtils {
     }
 
     //Gets the total number of t's said in #t
-    public Integer getTotalTs() {
-        int totalTCount = 0;
+    public Long getTotalTs() {
+        long totalTCount = 0;
         for (Object userTs : new TDataJSONManager().getTDataJsonObject().values()) {
-            totalTCount = totalTCount + (Integer) userTs;
+            totalTCount = totalTCount + (Long) userTs;
         }
         return totalTCount;
     }

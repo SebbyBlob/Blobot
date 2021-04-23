@@ -6,17 +6,20 @@ import com.blob.discord.managers.Command;
 import com.blob.discord.utilities.RoleUtils;
 import com.blob.discord.utilities.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class UtilityCmds extends Command {
 
     public UtilityCmds() {
-        super("blobot enable", "blobot disable", "blobot restricted", "vcreset", "vc reset");
+        super("blobot enable", "blobot disable", "blobot restricted", "vcreset", "vc reset", "t disable", "t enable", "!announce ping", "!announceping");
     }
 
     @Override
@@ -29,6 +32,12 @@ public class UtilityCmds extends Command {
             blobotRestricted(event);
         } else if (event.getMessage().getContentRaw().toLowerCase().matches("vcreset|vc reset")) {
             resetAutoVc(event);
+        } else if (event.getMessage().getContentRaw().equalsIgnoreCase("t enable")) {
+            toggleT(event, true);
+        } else if (event.getMessage().getContentRaw().equalsIgnoreCase("t disable")) {
+            toggleT(event, false);
+        } else if (event.getMessage().getContentRaw().toLowerCase().matches("!announce ping|!announceping")) {
+            announcePing(event);
         }
     }
 
@@ -77,7 +86,7 @@ public class UtilityCmds extends Command {
     }
 
     //Toggle Blobot for use in #Bot-commands only
-    public void blobotRestricted(MessageReceivedEvent event) {
+    private void blobotRestricted(MessageReceivedEvent event) {
         if (!new RoleUtils().hasRole(event.getMember(), "Owner", event.getGuild())) {
             event.getMessage().reply(Settings.NoPermissionMessage).queue(message1 -> {
                 event.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
@@ -99,11 +108,37 @@ public class UtilityCmds extends Command {
             new BlameSebJSONManager().setJsonValue(2, true);
             eb.setTitle("Blobot commands are now Only allowed in #bot-commands");
         }
-        event.getMessage().getChannel().sendMessage(eb.build()).queue();
+        event.getMessage().reply(eb.build()).queue();
+    }
+
+    //Toggles #t send-messages permission
+    private void toggleT(MessageReceivedEvent event, boolean onOff) {
+        if (!new RoleUtils().hasRole(event.getMember(), "Owner", event.getGuild())) {
+            event.getMessage().reply(Settings.NoPermissionMessage).queue(message1 -> {
+                event.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
+                message1.delete().queueAfter(3, TimeUnit.SECONDS);
+            });
+            return;
+        }
+        //Creates new message Embed
+        EmbedBuilder eb = new EmbedBuilder()
+                .setColor(new Color(103, 120, 194))
+                .setFooter("Developed by Sebby", "https://i.imgur.com/PpzENVl.png");
+        //Sets #t permissions based on new state
+        if (onOff == true) {
+            event.getGuild().getTextChannelById(Settings.TChannelId).putPermissionOverride(event.getGuild().getRoleById(Settings.TrustedRoleId)).setAllow(Permission.MESSAGE_WRITE).queue();
+            event.getGuild().getTextChannelById(Settings.TChannelId).putPermissionOverride(event.getGuild().getRoleById(Settings.StaffRoleId)).setAllow(Permission.MESSAGE_WRITE).queue();
+            eb.setTitle("#t is now Enabled");
+        } else {
+            event.getGuild().getTextChannelById(Settings.TChannelId).putPermissionOverride(event.getGuild().getRoleById(Settings.TrustedRoleId)).deny(Permission.MESSAGE_WRITE).queue();
+            event.getGuild().getTextChannelById(Settings.TChannelId).putPermissionOverride(event.getGuild().getRoleById(Settings.StaffRoleId)).deny(Permission.MESSAGE_WRITE).queue();
+            eb.setTitle("#t is now Disabled");
+        }
+        event.getMessage().reply(eb.build()).queue();
     }
 
     //Resets all automatic VCs
-    public void resetAutoVc(MessageReceivedEvent event) {
+    private void resetAutoVc(MessageReceivedEvent event) {
         if (!new RoleUtils().hasRole(event.getMember(), "Owner", event.getGuild())) {
             event.getMessage().reply(Settings.NoPermissionMessage).queue(message1 -> {
                 event.getMessage().delete().queueAfter(3, TimeUnit.SECONDS);
@@ -124,6 +159,18 @@ public class UtilityCmds extends Command {
             }
         }
         event.getMessage().reply("Successfully reset all automatic voice channels!").queue();
+    }
+
+    private void announcePing(MessageReceivedEvent event) {
+        if (event.getAuthor().getIdLong() != Settings.SebbyUserId) {
+            event.getMessage().reply(Settings.NoPermissionMessage).queue();
+            return;
+        }
+        event.getMessage().delete().queue();
+        for (int i=0; i < 5; i++) {
+            event.getGuild().getTextChannelById(Settings.GeneralChatId)
+                    .sendMessage(":exclamation::exclamation: :fire: " + event.getGuild().getTextChannelById(Settings.AnnouncementId).getAsMention() + " :fire: :exclamation::exclamation:").queue();
+        }
     }
 
 }

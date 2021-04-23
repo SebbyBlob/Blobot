@@ -1,25 +1,26 @@
 package com.blob.discord.managers;
 
 import com.blob.discord.Core;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import java.io.*;
 
-public class TDataJSONManager {
+public class EasterEggJSONManager {
 
     //on Startup
     public void initiateJson() {
         JSONParser jsonParser = new JSONParser();
 
         //Tries to read the file tdata.json
-        try (FileReader reader = new FileReader("tdata.json")) {
+        try (FileReader reader = new FileReader("easteregg.json")) {
 
             Object obj = jsonParser.parse(reader);
 
-            JSONObject tdata = (JSONObject) obj;
-            Core.getLogger().info("tdata.json values: " + tdata);
+            JSONObject easteregg = (JSONObject) obj;
+            Core.getLogger().info("easteregg.json values: " + easteregg);
 
         } catch (FileNotFoundException e) {
             //Creates file if not found
@@ -33,16 +34,33 @@ public class TDataJSONManager {
     }
 
     //Sets tdata value to tdata.json
-    public void addTDataJsonValue(String userId) {
+    public void addEastereggJsonValue(String userId, Integer easterEggType) {
         Object obj = null;
-        //Tries to read tdata.json file
+        //Tries to read easteregg.json file
         try {
-            obj = new JSONParser().parse(new FileReader("tdata.json"));
+            obj = new JSONParser().parse(new FileReader("easteregg.json"));
         } catch (IOException | ParseException e) {
             e.printStackTrace();
             return;
         }
-        JSONObject jsonObject = (JSONObject) obj;
+        JSONArray jsonArray = (JSONArray) obj;
+
+        JSONObject userJsonObject = null;
+
+        for (Object object : jsonArray) {
+            JSONObject jsonObject = (JSONObject) object;
+            jsonObject.key
+            if (jsonObject.n) {
+                userJsonObject = jsonObject
+            }
+        }
+
+        if (jsonArray.contains(userId)) {
+            JSONObject jsonObject = (JSONObject) jsonArray.get("");
+        } else {
+
+        }
+
 
         //Adds or sets to the "t" value of certain user
         long userTs = readJsonFile(userId);
@@ -54,30 +72,30 @@ public class TDataJSONManager {
         writeJsonFile(jsonObject);
     }
 
-    //Remove tdata value from tdata.json
-    public void removeTDataJsonValue(String userId) {
+    //Reads tdata.json
+    public Long readJsonFile(String userId) {
         Object obj = null;
         //Tries to read tdata.json file
         try {
-            obj = new JSONParser().parse(new FileReader("tdata.json"));
+            obj = new JSONParser().parse(new FileReader("easteregg.json"));
         } catch (IOException | ParseException e) {
             e.printStackTrace();
-            return;
         }
         JSONObject jsonObject = (JSONObject) obj;
 
-        //Adds or sets to the "t" value of certain user
-        long userTs = readJsonFile(userId);
-        if (userTs != 0) {
-            jsonObject.put(userId, userTs - 1);
+        //Gets the "t" value of a certain user
+        if (jsonObject.containsKey(userId)) {
+            return (Long) jsonObject.get(userId);
+        } else {
+            return 0L;
         }
-        writeJsonFile(jsonObject);
+
     }
 
     //Writes set values to JSON File
     public void writeJsonFile(JSONObject jsonObject) {
         //Tries to read tdata.json file
-        try (FileWriter file = new FileWriter("tdata.json")) {
+        try (FileWriter file = new FileWriter("easteregg.json")) {
 
             file.write(jsonObject.toJSONString());
             file.flush();
@@ -99,26 +117,6 @@ public class TDataJSONManager {
         JSONObject jsonObject = (JSONObject) obj;
 
         return jsonObject;
-    }
-
-    //Reads tdata.json
-    public Long readJsonFile(String userId) {
-        Object obj = null;
-        //Tries to read tdata.json file
-        try {
-            obj = new JSONParser().parse(new FileReader("tdata.json"));
-        } catch (IOException | ParseException e) {
-            e.printStackTrace();
-        }
-        JSONObject jsonObject = (JSONObject) obj;
-
-        //Gets the "t" value of a certain user
-        if (jsonObject.containsKey(userId)) {
-            return (Long) jsonObject.get(userId);
-        } else {
-            return 0L;
-        }
-
     }
 
     //Creates the empty format inside tdata.json

@@ -18,6 +18,7 @@ public class MessageListener extends ListenerAdapter {
     private int usersAnswered = 1;
     private boolean checkForConfirmAlert = false;
     private List<Long> usersCompleted = new ArrayList<Long>();
+    private ArrayList<Long> tCooldown = new ArrayList<>();
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
@@ -38,26 +39,63 @@ public class MessageListener extends ListenerAdapter {
                 }
             }
 
+            //1 in 2 chance of replying with "Thats a good wisdom!" when someone sends a message of 60 words or more
+            String[] words = rawMessage.split("\\s+");
+            if (words.length >= 80) {
+                if (Random.nextBoolean()) {
+                    event.getMessage().reply("That's a good wisdom!").queue();
+                }
+            }
+
             //#t protection
-            if (event.getChannel().getId().equals("770731649569783829")) {
+            if (event.getChannel().getIdLong() == Settings.TChannelId) {
+                if (event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong()) return;
+                //Forced 4.7 second message cooldown
+                if (tCooldown.contains(event.getAuthor().getIdLong())) {
+                    event.getMessage().delete().queue();
+                    event.getChannel().sendMessage("Please wait 5 seconds before sending another message!").queue(message -> {
+                        message.delete().queueAfter(2, TimeUnit.SECONDS);
+                    });
+                    return;
+                } else {
+                    tCooldown.add(event.getAuthor().getIdLong());
+
+                    Timer timer = new Timer();
+                    timer.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            tCooldown.remove(event.getAuthor().getIdLong());
+                            timer.cancel();
+                        }
+                    }, (4700));
+                }
+
                 //Checks if message is not equal to "t"
                 if (!rawMessage.equals("t")) {
                     Core.getLogger().info(event.getAuthor().getName() + " sent a non-t in #t: " + rawMessage);
                     event.getMessage().delete().queue();
                     event.getChannel().sendMessage("Hey " + event.getAuthor().getAsMention() + ", " + event.getTextChannel().getAsMention() + " is for t's only you boomer!").queue(message -> {
-                        message.delete().queueAfter(3, TimeUnit.SECONDS);
+                        message.delete().queueAfter(2,TimeUnit.SECONDS);
                     });
+                    return;
                 } else {
-                    //Makes sure user don't send two t's in a row
                     event.getTextChannel().getHistory().retrievePast(2)
                             .map(messages -> messages.get(1))
                             .queue(message -> {
                                 if (event.getAuthor().getId().equals(message.getAuthor().getId())) {
+                                    //Makes sure user don't send two t's in a row
                                     message.delete().queue();
                                     event.getChannel().sendMessage("Hey " + event.getAuthor().getAsMention() + ", You can't spam t's!").queue(message1 -> {
-                                        message1.delete().queueAfter(3, TimeUnit.SECONDS);
+                                        message1.delete().queueAfter(2, TimeUnit.SECONDS);
+                                    });
+                                } else if (event.getMessage().getReferencedMessage() != null) {
+                                    //Makes sure user didn't reply to a message
+                                    message.delete().queue();
+                                    event.getChannel().sendMessage("Hey " + event.getAuthor().getAsMention() + ", You can't reply to messages in #t!").queue(message1 -> {
+                                        message1.delete().queueAfter(2, TimeUnit.SECONDS);
                                     });
                                 } else {
+                                    //Adds tdata value to specified user
                                     new TDataJSONManager().addTDataJsonValue(event.getAuthor().getId());
                                     new BlameSebJSONManager().setJsonValue(4, event.getMessage().getIdLong());
                                 }
@@ -66,30 +104,16 @@ public class MessageListener extends ListenerAdapter {
                 }
             }
 
-            //Announcement #general Ping
+            //Random delayed Easter Egg reaction
+            if (Random.nextInt(500) == 1) {
+
+                event.getMessage().addReaction("easter_egg" + Random.nextInt(5)).queue();
+            }
+
+            //Announcement checker warning for #general alert
             if (event.getMessage().getChannel().getIdLong() == Settings.AnnouncementId) {
                 event.getGuild().getTextChannelById(Settings.NuclearTestingAreaId)
-                        .sendMessage(event.getGuild().getMemberById(Settings.SebbyUserId).getAsMention() + " send announcement alert to #general? Please confirm by typing `ConfirM` within 12 hours").queue();
-
-                checkForConfirmAlert = true;
-                Timer timer = new Timer();
-                timer.schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        checkForConfirmAlert = false;
-                    }
-                }, (1000 * 60 * 60 * 12));
-            }
-            //Check if Confirm Announce Alert command
-            if (checkForConfirmAlert == true
-                    && event.getMessage().getChannel().getIdLong() == Settings.NuclearTestingAreaId
-                    && event.getMessage().getAuthor().getIdLong() == Settings.SebbyUserId
-                    && event.getMessage().getContentRaw().equals("ConfirM")) {
-                //todo: cancel timer task
-                event.getMessage().reply("Sending Announcement alert to #general").queue();
-                for (int i=0; i < 5; i++) {
-                    event.getGuild().getTextChannelById(Settings.GeneralChatId).sendMessage(":exclamation::exclamation: :fire: #\uD83D\uDCE2announcements :fire: :exclamation::exclamation:").queue();
-                }
+                        .sendMessage(event.getGuild().getMemberById(Settings.SebbyUserId).getAsMention() + " Type `!announce ping` if you would like to send an Announcement Alert to #general").queue();
             }
 
             //Quick Maths checker

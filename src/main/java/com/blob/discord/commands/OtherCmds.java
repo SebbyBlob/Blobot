@@ -13,12 +13,16 @@ import java.util.Map;
 public class OtherCmds extends Command {
 
     public OtherCmds() {
-        super("tleaderboard", "t leaderboard");
+        super("tleaderboard", "t leaderboard", "amogus");
     }
 
     @Override
     public void onCommand(MessageReceivedEvent event) {
-        tLeaderboard(event);
+        if (event.getMessage().getContentRaw().toLowerCase().matches("t leaderboard|tleaderboard")) {
+            tLeaderboard(event);
+        } else if (event.getMessage().getContentRaw().toLowerCase().matches("amogus")) {
+            amogusEasterEggCmd(event);
+        }
     }
 
     //T Leaderboard Command
@@ -37,9 +41,16 @@ public class OtherCmds extends Command {
                         "\n" +
                         "\nYou have said **" + new TDataJSONManager().readJsonFile(event.getAuthor().getId()) + "** t's in #t" +
                         "\n" +
+                        "\nTotal t's in #t: **" + new TUtils().getTotalTs() + "**" +
+                        "\n" +
                         "\n*Only the top 5 users are shown*")
                 .setFooter("Developed by Sebby", "https://i.imgur.com/PpzENVl.png");
         event.getChannel().sendMessage(eb.build()).queue();
+    }
+
+    //Amogus easter egg Command
+    public void amogusEasterEggCmd(MessageReceivedEvent event) {
+        event.getMessage().reply("ඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞඞ \n https://tenor.com/view/when-the-drip-is-sus-gif-19616035").queue();
     }
 
 }

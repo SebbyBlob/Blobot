@@ -107,6 +107,7 @@ public class CmdMessageListener extends ListenerAdapter {
         blobotCmds.add("blobot disable");
         blobotCmds.add("blobot restricted");
         blobotCmds.add("t leaderboard");
+        blobotCmds.add("tleaderboard");
         blobotCmds.add("quick maths");
         blobotCmds.add("quickmaths");
         blobotCmds.add("quickmaths end");
@@ -115,7 +116,11 @@ public class CmdMessageListener extends ListenerAdapter {
         blobotCmds.add("quick maths stop");
         blobotCmds.add("vcreset");
         blobotCmds.add("vc reset");
-        //blobotCmds.add("test");
+        blobotCmds.add("amogus");
+        blobotCmds.add("!announce ping");
+        blobotCmds.add("!announceping");
+        blobotCmds.add("t enable");
+        blobotCmds.add("t disable");
     }
 
 }
