@@ -5,11 +5,16 @@ import com.blob.discord.commands.UtilityCmds;
 import com.blob.discord.commands.VoiceCmds;
 import com.blob.discord.managers.BlameSebJSONManager;
 import com.blob.discord.managers.CommandManager;
+import com.blob.discord.utilities.Settings;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
+import java.awt.*;
+import java.util.List;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -24,9 +29,7 @@ public class CmdMessageListener extends ListenerAdapter {
                 && event.isFromType(ChannelType.TEXT)
                 && !event.getAuthor().getId().equals("741780707109765150")) {
             if (new BlameSebJSONManager().readJsonFile()[3] == (Boolean) true) {
-                if (new BlameSebJSONManager().readJsonFile()[2] == (Boolean) true && !event.getChannel().getId().equals("785623302503661578")) {
-                    return;
-                } else {
+                if (new BlameSebJSONManager().readJsonFile()[2] == (Boolean) true && event.getChannel().getIdLong() != Settings.BotCmdsId) return;
                 String message = event.getMessage().getContentRaw().toLowerCase();
                 String[] messageSplit = message.split(" ");
                 if (blobotCmds.contains(message)) {
@@ -55,15 +58,55 @@ public class CmdMessageListener extends ListenerAdapter {
                     }, 1500);
                 } else {
                     //Private VC Commands
-                    if (messageSplit.length == 1 && messageSplit[0].equals("vccreate")) {
+                    if (messageSplit.length == 1 && messageSplit[0].equalsIgnoreCase("vccreate")) {
                         new VoiceCmds().createPrivateVoice(event);
-                    } else if (messageSplit.length == 2 && messageSplit[0].equals("vcinvite")) {
+                    } else if (messageSplit.length == 2 && messageSplit[0].equalsIgnoreCase("vcinvite")) {
                         String userId = messageSplit[1].substring(3, messageSplit[1].length() - 1);
                         try {
                             event.getGuild().retrieveMemberById(userId).queue(member -> {
                                 if (event.getGuild().getMemberById(userId) != null) {
-                                    System.out.println("1");
-                                    new VoiceCmds().inviteUserToPrivateVoice(event, event.getGuild().getMemberById(userId));
+                                    new VoiceCmds().inviteUserToPrivateVoice(event, member);
+                                } else {
+                                    event.getMessage().reply("The provided user is invalid! Cmd format: vcinvite " + event.getGuild().getSelfMember().getAsMention()).queue();
+                                }
+                            });
+                        } catch (IllegalArgumentException exception) {
+                            event.getMessage().reply("The provided user is invalid! Cmd format: vcinvite " + event.getGuild().getSelfMember().getAsMention()).queue();
+                        }
+                    }
+                    //Pronouns command
+                    else if (messageSplit.length == 2 && messageSplit[0].toLowerCase().matches("pronouns|/pronouns|pronoun|/pronoun")) {
+                        //Gets the user ID from the raw message string
+                        String userId = messageSplit[1].substring(3, messageSplit[1].length() - 1);
+                        try {
+                            //Attempts to retrieve the member using the ID
+                            event.getGuild().retrieveMemberById(userId).queue(member -> {
+                                if (event.getGuild().getMemberById(userId) != null) {
+                                    //Creates a new embed
+                                    EmbedBuilder eb = new EmbedBuilder()
+                                            .setColor(new Color(249, 127, 57))
+                                            .setTitle(member.getEffectiveName() + "'s pronouns")
+                                            .setFooter("Developed by Sebby", "https://i.imgur.com/PpzENVl.png");
+
+                                    //Creates a new StringBuilder
+                                    StringBuilder stringBuilder = new StringBuilder();
+                                    //Checks if the specified member had any pronouns and adds them to StringBuilder
+                                    for (Role role : member.getRoles()) {
+                                        if (role.getName().toLowerCase().matches("she/her|he/him|they/them|xe/xem|ve/ver|ey/em")) {
+                                            stringBuilder.append(role.getName() + ", ");
+                                        }
+                                    }
+
+                                    //Checks if any pronouns were added and builds the String
+                                    if (stringBuilder.length() != 0) {
+                                        //Removes the last 2 characters of the built StringBuilder to remove the ", "
+                                        String pronouns = stringBuilder.toString().substring(0, stringBuilder.toString().length() - 2);
+                                        eb.setDescription(pronouns);
+                                    } else {
+                                        eb.setDescription("None");
+                                    }
+                                    //Sends the message with embed
+                                    event.getMessage().reply(eb.build()).queue();
                                 } else {
                                     event.getMessage().reply("The provided user is invalid! Cmd format: vcinvite " + event.getGuild().getSelfMember().getAsMention()).queue();
                                 }
@@ -73,7 +116,6 @@ public class CmdMessageListener extends ListenerAdapter {
                         }
                     }
                 }
-            }
             } else {
                 if (event.getMessage().getContentRaw().equals("blobot enable")) {
                     Core.getLogger().info(event.getAuthor().getName() + " issued command: " + event.getMessage().getContentRaw());

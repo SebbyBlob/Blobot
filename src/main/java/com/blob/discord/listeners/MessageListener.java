@@ -16,7 +16,6 @@ public class MessageListener extends ListenerAdapter {
 
     private final Random Random = new Random();
     private int usersAnswered = 1;
-    private boolean checkForConfirmAlert = false;
     private List<Long> usersCompleted = new ArrayList<Long>();
     private ArrayList<Long> tCooldown = new ArrayList<>();
 
@@ -49,7 +48,8 @@ public class MessageListener extends ListenerAdapter {
 
             //#t protection
             if (event.getChannel().getIdLong() == Settings.TChannelId) {
-                if (event.getAuthor().getIdLong() == event.getJDA().getSelfUser().getIdLong()) return;
+                //Checks to make sure the message is not from itself
+                if (event.getAuthor().getIdLong() == Settings.BlobotId || event.getAuthor().getIdLong() == Settings.BlobotDevId) return;
                 //Forced 4.7 second message cooldown
                 if (tCooldown.contains(event.getAuthor().getIdLong())) {
                     event.getMessage().delete().queue();
@@ -102,12 +102,6 @@ public class MessageListener extends ListenerAdapter {
                             });
 
                 }
-            }
-
-            //Random delayed Easter Egg reaction
-            if (Random.nextInt(500) == 1) {
-
-                event.getMessage().addReaction("easter_egg" + Random.nextInt(5)).queue();
             }
 
             //Announcement checker warning for #general alert

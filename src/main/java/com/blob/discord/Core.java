@@ -33,7 +33,7 @@ public class Core {
             //Attempts to build JDA
             jda = JDABuilder.createDefault(args[0])
                     .setMemberCachePolicy(MemberCachePolicy.ALL)
-                    .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                    .enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGE_REACTIONS)
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.EMOTE, CacheFlag.CLIENT_STATUS)
                     .setStatus(OnlineStatus.ONLINE)
                     .setActivity(Activity.watching("TGU"))
@@ -51,7 +51,10 @@ public class Core {
                 new VoiceLeaveListener(),
                 new VoiceMoveListener(),
                 new GuildUserLeaveListener(),
-                new GuildUserJoinListener());
+                new GuildUserJoinListener(),
+                new ConversationMessageListener(),
+                new MessageReactionListener(),
+                new MessageEditListener());
 
         //Initiation
         new CmdMessageListener().onStartup();
@@ -60,6 +63,7 @@ public class Core {
         new TUtils().onStartup();
         VoiceJoinListener.getInstance().onStartup();
         CommandManager.getInstance().onStartup();
+        new MessageReactionListener().setupSelfRoles(jda);
         //new HtmlReader().onStartup();
 
     }

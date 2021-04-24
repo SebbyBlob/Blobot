@@ -41,9 +41,10 @@ public class HelpCmd extends Command {
                         "\n`ping me` **-** Pings you" +
                         "\n\n__Voice Commands__:" +
                         "\n`vccreate` **-** Creates a Private VC only you can join" +
-                        "\n`vcinvite @User` **-** Invites users to your Private VC" +
+                        "\n`vcinvite @Name` **-** Invites users to your Private VC" +
                         "\n\n__Other Commands__:" +
-                        "\n`t leaderboard` **-** Shows a top 5 leaderboard of who has the most t's in #t")
+                        "\n`t leaderboard` **-** Shows a top 5 leaderboard of who has the most t's in #t" +
+                        "\n`pronouns @Name` [aliases: `/pronouns @Name`, `pronoun @Name`, `/pronoun @Name`]")
                 .setFooter("Developed by Sebby", "https://i.imgur.com/PpzENVl.png");
         event.getChannel().sendMessage(eb.build()).queue();
     }
@@ -60,6 +61,8 @@ public class HelpCmd extends Command {
                         "\n`blobot disable` **-** Disables Blobot if Blobot enabled" +
                         "\n`blobot restricted` **-** Toggles Blobot cmds for use only in #bot-commands" +
                         "\n`vcreset`/`vc reset` **-** Resets all automatic voice channels" +
+                        "\n`t enable` **-** Enables send-message permission in #t if its disabled" +
+                        "\n`t disable` **-** Disables send-message permission in #t if its enabled" +
                         "\n\n__Fun Commands__:" +
                         "\n`quickmaths` **-** Starts a Quickmaths game" +
                         "\n`quickmaths end` **-** Stops any current Quickmaths game")

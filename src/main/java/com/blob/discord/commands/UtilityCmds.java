@@ -7,13 +7,12 @@ import com.blob.discord.utilities.RoleUtils;
 import com.blob.discord.utilities.Settings;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class UtilityCmds extends Command {
@@ -126,12 +125,16 @@ public class UtilityCmds extends Command {
                 .setFooter("Developed by Sebby", "https://i.imgur.com/PpzENVl.png");
         //Sets #t permissions based on new state
         if (onOff == true) {
-            event.getGuild().getTextChannelById(Settings.TChannelId).putPermissionOverride(event.getGuild().getRoleById(Settings.TrustedRoleId)).setAllow(Permission.MESSAGE_WRITE).queue();
-            event.getGuild().getTextChannelById(Settings.TChannelId).putPermissionOverride(event.getGuild().getRoleById(Settings.StaffRoleId)).setAllow(Permission.MESSAGE_WRITE).queue();
+            event.getGuild().getTextChannelById(Settings.TChannelId).getManager()
+                    .putPermissionOverride(event.getGuild().getRoleById(Settings.TrustedRoleId), EnumSet.of(Permission.MESSAGE_WRITE),null).queue();
+            event.getGuild().getTextChannelById(Settings.TChannelId).getManager()
+                    .putPermissionOverride(event.getGuild().getRoleById(Settings.StaffRoleId), EnumSet.of(Permission.MESSAGE_WRITE),null).queue();
             eb.setTitle("#t is now Enabled");
         } else {
-            event.getGuild().getTextChannelById(Settings.TChannelId).putPermissionOverride(event.getGuild().getRoleById(Settings.TrustedRoleId)).deny(Permission.MESSAGE_WRITE).queue();
-            event.getGuild().getTextChannelById(Settings.TChannelId).putPermissionOverride(event.getGuild().getRoleById(Settings.StaffRoleId)).deny(Permission.MESSAGE_WRITE).queue();
+            event.getGuild().getTextChannelById(Settings.TChannelId).getManager()
+                    .putPermissionOverride(event.getGuild().getRoleById(Settings.TrustedRoleId), null, EnumSet.of(Permission.MESSAGE_WRITE)).queue();
+            event.getGuild().getTextChannelById(Settings.TChannelId).getManager()
+                    .putPermissionOverride(event.getGuild().getRoleById(Settings.StaffRoleId), null, EnumSet.of(Permission.MESSAGE_WRITE)).queue();
             eb.setTitle("#t is now Disabled");
         }
         event.getMessage().reply(eb.build()).queue();
