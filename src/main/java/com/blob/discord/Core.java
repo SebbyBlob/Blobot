@@ -4,6 +4,7 @@ import com.blob.discord.listeners.*;
 import com.blob.discord.managers.BlameSebJSONManager;
 import com.blob.discord.managers.CommandManager;
 import com.blob.discord.managers.TDataJSONManager;
+import com.blob.discord.utilities.Settings;
 import com.blob.discord.utilities.TUtils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -60,12 +61,11 @@ public class Core {
         new CmdMessageListener().onStartup();
         new BlameSebJSONManager().initiateJson();
         new TDataJSONManager().initiateJson();
-        new TUtils().onStartup();
+        new TUtils().onStartup(jda.getGuildById(Settings.TGUServerId));
         VoiceJoinListener.getInstance().onStartup();
         CommandManager.getInstance().onStartup();
         new MessageReactionListener().setupSelfRoles(jda);
         //new HtmlReader().onStartup();
-
     }
 
     public static JDA getJDA() { return jda; }

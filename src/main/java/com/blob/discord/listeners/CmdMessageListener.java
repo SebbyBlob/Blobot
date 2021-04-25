@@ -108,11 +108,11 @@ public class CmdMessageListener extends ListenerAdapter {
                                     //Sends the message with embed
                                     event.getMessage().reply(eb.build()).queue();
                                 } else {
-                                    event.getMessage().reply("The provided user is invalid! Cmd format: vcinvite " + event.getGuild().getSelfMember().getAsMention()).queue();
+                                    event.getMessage().reply("The provided user is invalid! Cmd format: pronouns " + event.getGuild().getSelfMember().getAsMention()).queue();
                                 }
                             });
                         } catch (IllegalArgumentException exception) {
-                            event.getMessage().reply("The provided user is invalid! Cmd format: vcinvite " + event.getGuild().getSelfMember().getAsMention()).queue();
+                            event.getMessage().reply("The provided user is invalid! Cmd format: pronouns " + event.getGuild().getSelfMember().getAsMention()).queue();
                         }
                     }
                 }
@@ -122,7 +122,7 @@ public class CmdMessageListener extends ListenerAdapter {
                     new UtilityCmds().blobotToggle(event, true);
                 }
             }
-        } else if (event.isFromType(ChannelType.PRIVATE) && !event.getAuthor().getId().equals("741780707109765150")) {
+        } else if (event.isFromType(ChannelType.PRIVATE) && !event.getAuthor().getId().matches(Settings.BlobotId + "|" + Settings.BlobotDevId)) {
             event.getChannel().sendMessage(event.getAuthor().getAsMention() + " *This is an automated Bot and therefore this message will not be seen, Sorry!*").queue();
         }
     }
@@ -159,6 +159,7 @@ public class CmdMessageListener extends ListenerAdapter {
         blobotCmds.add("vcreset");
         blobotCmds.add("vc reset");
         blobotCmds.add("amogus");
+        blobotCmds.add("sus");
         blobotCmds.add("!announce ping");
         blobotCmds.add("!announceping");
         blobotCmds.add("t enable");

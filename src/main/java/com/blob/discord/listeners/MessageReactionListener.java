@@ -99,7 +99,6 @@ public class MessageReactionListener extends ListenerAdapter {
         });
     }
 
-    //todo check if reactions already there
     public void setupSelfRoles(JDA jda) {
         jda.getGuildById(Settings.TGUServerId).getTextChannelById(Settings.SelfRoleChannelId).retrieveMessageById(Settings.SelfRoleMsgId).queue(message -> {
             if (message == null) return;
