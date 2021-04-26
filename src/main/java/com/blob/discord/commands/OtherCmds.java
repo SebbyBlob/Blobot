@@ -4,12 +4,13 @@ import com.blob.discord.managers.Command;
 import com.blob.discord.managers.TDataJSONManager;
 import com.blob.discord.utilities.TUtils;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import java.awt.*;
+import java.util.*;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.stream.Collectors;
 
 public class OtherCmds extends Command {
 
@@ -37,12 +38,22 @@ public class OtherCmds extends Command {
         }
 
         List<Map.Entry<String, Long>> sortedList = new TUtils().tSorter();
+        //HashMap<String, Long> sortedList = new TUtils().tSorter();
         StringBuilder stringBuilder = new StringBuilder();
 
         //TODO: Add player leave protection
         //Retrieve top 5 t members
-        event.getGuild().retrieveMembersByIds(sortedList.get(0).getKey(), sortedList.get(1).getKey()
-                , sortedList.get(2).getKey(), sortedList.get(3).getKey(), sortedList.get(4).getKey()).onSuccess(members -> {
+        //sortedList.get(0).getKey(), sortedList.get(1).getKey()
+        //                , sortedList.get(2).getKey(), sortedList.get(3).getKey(), sortedList.get(4).getKey()
+        Collection<Long> ids = sortedList.stream().map(Map.Entry::getKey).map(Long::parseLong).collect(Collectors.toList());
+        System.out.println(ids.toString());
+        event.getGuild().retrieveMembersByIds(ids).onSuccess(members -> {
+            for (Map.Entry<String, Long> sortedMember : sortedList) {
+                if (members.contains())
+            }
+
+            members.indexOf(sortedList.get(0))
+
             //Appends top 5 t users to the Stringbuilder
             stringBuilder.append("\n:first_place: **" + members.get(0).getEffectiveName() + " - " + sortedList.get(0).getValue() + " t's**");
             stringBuilder.append("\n:second_place: **" + members.get(1).getEffectiveName() + " - " + sortedList.get(1).getValue() + " t's**");

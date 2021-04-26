@@ -26,8 +26,8 @@ public class TUtils {
                 .putPermissionOverride(guild.getRoleById(Settings.TrustedRoleId), null, EnumSet.of(Permission.MESSAGE_WRITE)).queue();
         guild.getTextChannelById(Settings.TChannelId).getManager()
                 .putPermissionOverride(guild.getRoleById(Settings.StaffRoleId), null, EnumSet.of(Permission.MESSAGE_WRITE)).queue();*/
-        guild.getTextChannelById(Settings.TChannelId).upsertPermissionOverride(guild.getRoleById(Settings.TrustedRoleId)).deny(Permission.MESSAGE_WRITE).queue();
-        guild.getTextChannelById(Settings.TChannelId).upsertPermissionOverride(guild.getRoleById(Settings.StaffRoleId)).deny(Permission.MESSAGE_WRITE).queue();
+        //guild.getTextChannelById(Settings.TChannelId).upsertPermissionOverride(guild.getRoleById(Settings.TrustedRoleId)).deny(Permission.MESSAGE_WRITE).queue();
+        //guild.getTextChannelById(Settings.TChannelId).upsertPermissionOverride(guild.getRoleById(Settings.StaffRoleId)).deny(Permission.MESSAGE_WRITE).queue();
         //Makes sure the last t sent is not null
         if (!(new BlameSebJSONManager().readJsonFile()[4] == null)) {
             Message lastSentT = Core.getJDA().getTextChannelById(Settings.TChannelId).retrieveMessageById((Long) new BlameSebJSONManager().readJsonFile()[4]).complete();
@@ -79,7 +79,7 @@ public class TUtils {
                         Core.getJDA().getTextChannelsByName("general", false).get(0).sendMessage("Non-t found in #t, message link: " + msg.getJumpUrl()).queue();
                     }
                     if (i == 99) {
-                        readTAfterMsg(messageHistory.getRetrievedHistory().get(0), guild);
+                        readTAfterMsg(messageHistory.getRetrievedHistory().get(0), msg.getAuthor().getIdLong(), guild);
                     }
                 }
         });
@@ -102,8 +102,8 @@ public class TUtils {
                                 .putPermissionOverride(guild.getRoleById(Settings.TrustedRoleId), EnumSet.of(Permission.MESSAGE_WRITE), null).queue();
                         guild.getTextChannelById(Settings.TChannelId).getManager()
                                 .putPermissionOverride(guild.getRoleById(Settings.StaffRoleId), EnumSet.of(Permission.MESSAGE_WRITE), null).queue();*/
-                        guild.getTextChannelById(Settings.TChannelId).upsertPermissionOverride(guild.getRoleById(Settings.TrustedRoleId)).grant(Permission.MESSAGE_WRITE).queue();
-                        guild.getTextChannelById(Settings.TChannelId).upsertPermissionOverride(guild.getRoleById(Settings.StaffRoleId)).grant(Permission.MESSAGE_WRITE).queue();
+                        //guild.getTextChannelById(Settings.TChannelId).upsertPermissionOverride(guild.getRoleById(Settings.TrustedRoleId)).grant(Permission.MESSAGE_WRITE).queue();
+                        //guild.getTextChannelById(Settings.TChannelId).upsertPermissionOverride(guild.getRoleById(Settings.StaffRoleId)).grant(Permission.MESSAGE_WRITE).queue();
                         Core.getLogger().info("#t Calculation and check complete!");
                         return;
                     }
@@ -127,9 +127,19 @@ public class TUtils {
                         Core.getJDA().getTextChannelsByName("general", false).get(0).sendMessage("Non-t found in #t, message link: " + msg.getJumpUrl()).queue();
                     }
                     if (i == 99) {
-                        readTAfterMsg(messageHistory.getRetrievedHistory().get(0), guild);
+                        readTAfterMsg(messageHistory.getRetrievedHistory().get(0), msg.getAuthor().getIdLong(), guild);
                     }
                 }
+            } else {
+                setLastSentT();
+                getInstance().isTLoaded = true;
+                        /*guild.getTextChannelById(Settings.TChannelId).getManager()
+                                .putPermissionOverride(guild.getRoleById(Settings.TrustedRoleId), EnumSet.of(Permission.MESSAGE_WRITE), null).queue();
+                        guild.getTextChannelById(Settings.TChannelId).getManager()
+                                .putPermissionOverride(guild.getRoleById(Settings.StaffRoleId), EnumSet.of(Permission.MESSAGE_WRITE), null).queue();*/
+                //guild.getTextChannelById(Settings.TChannelId).upsertPermissionOverride(guild.getRoleById(Settings.TrustedRoleId)).grant(Permission.MESSAGE_WRITE).queue();
+                //guild.getTextChannelById(Settings.TChannelId).upsertPermissionOverride(guild.getRoleById(Settings.StaffRoleId)).grant(Permission.MESSAGE_WRITE).queue();
+                Core.getLogger().info("#t Calculation and check complete!");
             }
         });
     }
@@ -165,6 +175,16 @@ public class TUtils {
             }
         });
 
+
+        /*HashMap<String, Long> result = new LinkedHashMap<>();
+        for (Iterator<Map.Entry<String, Long>> iterator = list.iterator(); iterator.hasNext();) {
+
+            Map.Entry<String, Long> entry  = iterator.next();
+            result.put(entry.getKey(), entry.getValue());
+
+        }
+
+        return result;*/
         return list;
     }
 
