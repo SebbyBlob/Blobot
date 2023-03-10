@@ -61,7 +61,7 @@ public class TUtils {
                         return;
                     }
                     //Makes sure the message is a "t"
-                    if (msg.getContentRaw().equals("t")) {
+                    if (msg.getContentRaw().equals("t") || msg.getContentRaw().equals("T")) {
                         new TDataJSONManager().addTDataJsonValue(msg.getAuthor().getId());
                     } else {
                         Core.getLogger().info("Non-t found in #t, message link: " + msg.getJumpUrl());
